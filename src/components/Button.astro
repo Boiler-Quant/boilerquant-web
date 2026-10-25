@@ -1,0 +1,21 @@
+---
+// Button or link styled as a button. Renders <a> when href is given.
+interface Props {
+	href?: string;
+	variant?: 'primary' | 'secondary' | 'ghost';
+	size?: 'sm' | 'md' | 'lg';
+	class?: string;
+	[key: string]: unknown;
+}
+const { href, variant = 'primary', size = 'md', class: className, ...rest } = Astro.props;
+const base = 'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent';
+const variants = {
+	primary: 'bg-btn text-btn-fg hover:bg-btn-hover',
+	secondary: 'border border-accent text-accent hover:bg-card-hover',
+	ghost: 'text-accent hover:text-accent-hover',
+};
+const sizes = { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2.5 text-sm', lg: 'px-5 py-3 text-base' };
+const Tag = href ? 'a' : 'button';
+---
+
+<Tag href={href} class:list={[base, variants[variant], sizes[size], className]} {...rest}><slot /></Tag>

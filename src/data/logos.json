@@ -5,11 +5,6 @@
     "website": "https://sig.com"
   },
   {
-    "name": "Optiver",
-    "image": "/company_logos/optiver.png",
-    "website": "https://optiver.com"
-  },
-  {
     "name": "Citadel Securities",
     "image": "/company_logos/citsec.jpg",
     "website": "https://www.citadelsecurities.com"
@@ -20,19 +15,29 @@
     "website": "https://www.imc.com"
   },
   {
+    "name": "Tower",
+    "image": "/company_logos/tower.png",
+    "website": "https://tower-research.com"
+  },
+  {
+    "name": "Optiver",
+    "image": "/company_logos/optiver.png",
+    "website": "https://optiver.com"
+  },
+  {
     "name": "Old Mission",
     "image": "/company_logos/omc.png",
     "website": "https://oldmissioncapital.com"
   },
   {
-    "name": "Peak6",
-    "image": "/company_logos/peak6.png",
-    "website": "https://peak6.com"
-  },
-  {
     "name": "Jump Trading",
     "image": "/company_logos/jump.png",
     "website": "https://www.jumptrading.com"
+  },
+  {
+    "name": "Peak6",
+    "image": "/company_logos/peak6.png",
+    "website": "https://peak6.com"
   },
   {
     "name": "TMG",
@@ -120,6 +125,11 @@
     "website": "https://www.spacex.com"
   },
   {
+    "name": "Capital One",
+    "image": "/company_logos/capitalone.png",
+    "website": "https://www.capitalone.com"
+  },
+  {
     "name": "Amazon",
     "image": "/company_logos/amazon.png",
     "website": "https://www.amazon.jobs"
@@ -138,10 +148,5 @@
     "name": "Vistra",
     "image": "/company_logos/vistra.png",
     "website": "https://vistracorp.com"
-  },
-  {
-    "name": "Capital One",
-    "image": "/company_logos/capitalone.png",
-    "website": "https://www.capitalone.com"
   }
 ]

@@ -1,6 +1,5 @@
 ---
-// Shared page shell. Every page wraps itself in this so the <head>, nav bar,
-// footer, and Tailwind styles are defined in exactly one place.
+// Shared page shell: <head>, nav bar, footer. Styles come from global.css only.
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -8,10 +7,15 @@ import Footer from '../components/Footer.astro';
 interface Props {
 	title: string;
 	description?: string;
+	noindex?: boolean; // hide from search engines (e.g. /styleguide)
+	fullBleed?: boolean; // page manages its own sections (home)
 }
-
-const { title, description = 'Boiler Quant — Purdue University’s quantitative finance club.' } =
-	Astro.props;
+const {
+	title,
+	description = "Boiler Quant — Purdue University's student-run quantitative finance club.",
+	noindex = false,
+	fullBleed = false,
+} = Astro.props;
 ---
 
 <!doctype html>
@@ -21,13 +25,14 @@ const { title, description = 'Boiler Quant — Purdue University’s quantitativ
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
+		{noindex && <meta name="robots" content="noindex" />}
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
 		<title>{title} · Boiler Quant</title>
 	</head>
-	<body class="flex min-h-screen flex-col bg-white text-neutral-900 antialiased">
+	<body class="flex min-h-screen flex-col">
 		<Header />
-		<main class="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+		<main class:list={['flex-1', !fullBleed && 'pb-8']}>
 			<slot />
 		</main>
 		<Footer />

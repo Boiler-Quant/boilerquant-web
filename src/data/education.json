@@ -1,0 +1,26 @@
+[
+	{
+		"key": "trading",
+		"title": "Trading",
+		"description": "Market structure, order books, and the intuition behind market making and arbitrage. Includes weekly mock-trading games and a semester-long paper-trading challenge.",
+		"lead": "Lead TBD"
+	},
+	{
+		"key": "dev",
+		"title": "Dev",
+		"description": "The software side of quant work: Python and C++ fundamentals, working with market data, backtesting frameworks, and writing code that other people can read.",
+		"lead": "Lead TBD"
+	},
+	{
+		"key": "math",
+		"title": "Math",
+		"description": "Probability, statistics, linear algebra, and the classic brainteasers that show up in quant interviews, taught through problem sets and group sessions.",
+		"lead": "Lead TBD"
+	},
+	{
+		"key": "hardware",
+		"title": "Hardware",
+		"description": "An introduction to low-latency systems: FPGAs, networking, and why nanoseconds matter. Hands-on labs with real development boards.",
+		"lead": "Lead TBD"
+	}
+]

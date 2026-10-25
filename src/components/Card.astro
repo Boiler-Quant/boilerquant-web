@@ -1,0 +1,19 @@
+---
+// Surface container. Becomes a link (with hover state) when href is given.
+interface Props { href?: string; padded?: boolean; class?: string; [key: string]: unknown }
+const { href, padded = true, class: className, ...rest } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag
+	href={href}
+	class:list={[
+		'block rounded-lg border border-edge bg-card',
+		padded && 'p-6',
+		href && 'transition-colors hover:bg-card-hover',
+		className,
+	]}
+	{...rest}
+>
+	<slot />
+</Tag>

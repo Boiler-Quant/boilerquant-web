@@ -1,2 +1,156 @@
-@import "tailwindcss" source("../");
-@plugin "@tailwindcss/typography";
+/* ============================================================================
+   Boiler Quant design system — the single source of truth for colors, fonts,
+   and shared text styles. Nothing else in the project should hardcode a hex
+   value or a font name; use the tokens below (as Tailwind utilities like
+   bg-surface / text-accent / font-mono, or as CSS variables).
+   ========================================================================== */
+
+/* Self-hosted fonts (latin subset only, to keep the download small) */
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-sans/latin-700.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+
+@import 'tailwindcss' source('../');
+@plugin '@tailwindcss/typography';
+
+/* ----------------------------------------------------------------------------
+   1. Brand palette + fonts. These become Tailwind utilities automatically:
+      bg-gold, text-ash, border-graphite, font-sans, font-mono, ...
+   -------------------------------------------------------------------------- */
+@theme {
+	--font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+	--font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+	--color-gold: #ead99e; /* buttons on dark, headings on dark, highlights */
+	--color-gold-tint: #fbf7ec; /* faint gold tint, light section backgrounds */
+	--color-gold-hover: #f4ebc8; /* hover state on light surfaces */
+	--color-gold-pressed: #c9b36a; /* gold hover / pressed on dark */
+	--color-gold-deep: #8c7a3f; /* gold text on white */
+
+	--color-black: #000000; /* primary text on light sections */
+	--color-ink: #111111; /* page background on dark sections */
+	--color-graphite: #3a3a3a; /* cards and nav on dark backgrounds */
+	--color-ash: #8a8a8a; /* muted, secondary text */
+	--color-light: #f5f5f5; /* light section background */
+	--color-white: #ffffff; /* light cards */
+
+	--color-warning: #f5a524;
+	--color-gain: #2fbf71;
+	--color-loss: #e5484d;
+
+	--container-site: 72rem; /* max content width */
+}
+
+/* ----------------------------------------------------------------------------
+   2. Semantic roles. The site is dark by default ("Terminal" direction).
+      Wrap any element in data-tone="light" to flip it to a light surface;
+      every component picks up the right colors automatically.
+   -------------------------------------------------------------------------- */
+:root,
+[data-tone='dark'] {
+	--bg: var(--color-ink);
+	--fg: var(--color-white);
+	--muted: var(--color-ash);
+	--card: var(--color-graphite);
+	--card-hover: #474747;
+	--edge: rgba(255, 255, 255, 0.12);
+	--heading: var(--color-gold);
+	--accent: var(--color-gold);
+	--accent-hover: var(--color-gold-pressed);
+	--btn-bg: var(--color-gold);
+	--btn-fg: var(--color-black);
+	--btn-hover: var(--color-gold-pressed);
+}
+[data-tone='light'] {
+	--bg: var(--color-light);
+	--fg: var(--color-black);
+	--muted: var(--color-ash);
+	--card: var(--color-white);
+	--card-hover: var(--color-gold-hover);
+	--edge: rgba(0, 0, 0, 0.1);
+	--heading: var(--color-black);
+	--accent: var(--color-gold-deep);
+	--accent-hover: #6f6132;
+	--btn-bg: var(--color-black);
+	--btn-fg: var(--color-gold);
+	--btn-hover: var(--color-graphite);
+}
+[data-tone] {
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+/* Expose the semantic roles as Tailwind utilities:
+   bg-surface, text-fg, text-muted, bg-card, border-edge, text-accent, ... */
+@theme inline {
+	--color-surface: var(--bg);
+	--color-fg: var(--fg);
+	--color-muted: var(--muted);
+	--color-card: var(--card);
+	--color-card-hover: var(--card-hover);
+	--color-edge: var(--edge);
+	--color-heading: var(--heading);
+	--color-accent: var(--accent);
+	--color-accent-hover: var(--accent-hover);
+	--color-btn: var(--btn-bg);
+	--color-btn-fg: var(--btn-fg);
+	--color-btn-hover: var(--btn-hover);
+}
+
+/* ----------------------------------------------------------------------------
+   3. Shared text styles and layout helpers (usable as classes anywhere).
+   -------------------------------------------------------------------------- */
+@utility eyebrow {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--accent);
+}
+@utility meta {
+	font-family: var(--font-mono);
+	font-size: 0.75rem;
+	color: var(--muted);
+}
+@utility site-container {
+	margin-inline: auto;
+	width: 100%;
+	max-width: var(--container-site);
+	padding-inline: 1.5rem;
+}
+
+/* Base */
+html {
+	background-color: var(--bg);
+	color: var(--fg);
+	font-family: var(--font-sans);
+	-webkit-font-smoothing: antialiased;
+}
+::selection {
+	background: var(--color-gold);
+	color: var(--color-black);
+}
+
+/* Long-form Markdown (blog posts, news, projects): map the typography plugin
+   onto our tokens so it works on dark and light surfaces alike. */
+.prose {
+	--tw-prose-body: var(--fg);
+	--tw-prose-headings: var(--heading);
+	--tw-prose-lead: var(--muted);
+	--tw-prose-links: var(--accent);
+	--tw-prose-bold: var(--fg);
+	--tw-prose-counters: var(--muted);
+	--tw-prose-bullets: var(--muted);
+	--tw-prose-hr: var(--edge);
+	--tw-prose-quotes: var(--fg);
+	--tw-prose-quote-borders: var(--accent);
+	--tw-prose-captions: var(--muted);
+	--tw-prose-code: var(--accent);
+	--tw-prose-pre-code: var(--fg);
+	--tw-prose-pre-bg: var(--card);
+	--tw-prose-th-borders: var(--edge);
+	--tw-prose-td-borders: var(--edge);
+}
