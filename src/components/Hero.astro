@@ -1,17 +1,22 @@
 ---
 // Home page opening: a full-screen Monte Carlo fan (src/scripts/visuals/montecarlo.ts)
 // with the statement under it. On scroll the text rises, the visual fades out and
-// the rest of the paragraph fades in.
+// the rest of the paragraph fades in, then the finished paragraph holds until the
+// section has scrolled through.
 //
 // The hidden paragraph still takes up layout space, so the script measures that
 // height (--extra) and shifts the block down by it at the top of the page; as you
 // scroll the shift blends into --rise, which places the full block in view.
+//
+// Motion is a CSS scroll-driven animation (animation-timeline: scroll()), so the
+// browser moves the text in lockstep with the scroll position. Browsers without
+// support fall back to the JS scroll listener setting --p.
 const statement = "We are Boiler Quant, Purdue's student-run quantitative finance club.";
 const paragraph =
 	'We bring together students from math, computer science, engineering, and economics to learn how modern markets actually work: by building trading strategies, running research projects, and competing against each other and other schools. Our alumni now trade and build at the firms that define the industry.';
 ---
 
-<section id="hero" class="relative h-[220vh]">
+<section id="hero" class="relative h-[320vh]">
 	<div id="hero-stage" class="sticky overflow-hidden" style="top: var(--header-h, 61px); height: calc(100vh - var(--header-h, 61px))">
 		<canvas id="hero-viz" class="absolute inset-0 h-full w-full" style="opacity: calc(1 - var(--p, 0) * 1.4)" aria-hidden="true"></canvas>
 		<div class="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent" aria-hidden="true"></div>
@@ -23,14 +28,48 @@ const paragraph =
 		>
 			<p class="max-w-4xl text-2xl leading-[1.2] font-medium tracking-tight sm:text-4xl lg:text-[2.75rem]">
 				<span id="hero-statement">{statement}</span>
-				<span style="opacity: var(--p, 0)"> {paragraph}</span>
+				<span id="hero-para" style="opacity: var(--p, 0)"> {paragraph}</span>
 			</p>
 		</div>
 	</div>
 </section>
 
+<style>
+	/* Scroll-driven version. The animations run from --anim-start to --anim-end (page
+	   scroll offsets in px, set by the script) and override the --p inline styles above. */
+	@supports (animation-timeline: scroll()) {
+		#hero-text,
+		#hero-viz,
+		#hero-para {
+			animation-timeline: scroll(root);
+			animation-range: var(--anim-start, 0px) var(--anim-end, 100vh);
+			animation-timing-function: linear;
+			animation-fill-mode: both;
+		}
+		#hero-text { animation-name: hero-rise; }
+		#hero-viz { animation-name: hero-fade-out; }
+		#hero-para { animation-name: hero-fade-in; }
+	}
+	@keyframes hero-rise {
+		from { transform: translateY(var(--extra, 0px)); }
+		to { transform: translateY(var(--rise, 0px)); }
+	}
+	@keyframes hero-fade-out {
+		from { opacity: 1; }
+		71.4% { opacity: 0; } /* same curve as 1 - p * 1.4 */
+		to { opacity: 0; }
+	}
+	@keyframes hero-fade-in {
+		from { opacity: 0; }
+		to { opacity: 1; }
+	}
+</style>
+
 <script>
 	import { montecarlo } from '../scripts/visuals/montecarlo';
+
+	const ANIM = 1.2; // screen-heights of scroll for the text/visual transition; the rest of the section is the hold
+	const scrollDriven = CSS.supports('animation-timeline', 'scroll()');
 
 	// Runs on first load and after each client-side navigation; the returned cleanup
 	// stops the animation and removes listeners when the user leaves the page.
@@ -42,7 +81,11 @@ const paragraph =
 		const statement = document.getElementById('hero-statement')!;
 		const header = document.querySelector<HTMLElement>('header');
 
-		// Geometry: header height, hidden-paragraph height, and how far the block rises.
+		// Geometry, measured on load/resize only (never inside the scroll handler):
+		// header height, hidden-paragraph height, how far the block rises, and the
+		// scroll offsets over which the transition plays.
+		let start = 0;
+		let range = 1;
 		const measure = () => {
 			const headerH = header?.offsetHeight ?? 0;
 			document.documentElement.style.setProperty('--header-h', `${headerH}px`);
@@ -52,18 +95,23 @@ const paragraph =
 			const targetTop = Math.max(24, (stageH - para.offsetHeight) / 2); // centred, or just below the header
 			hero.style.setProperty('--extra', `${extra}px`);
 			hero.style.setProperty('--rise', `${targetTop - naturalTop}px`);
+
+			start = hero.offsetTop;
+			range = Math.min(window.innerHeight * ANIM, hero.offsetHeight - stageH);
+			hero.style.setProperty('--anim-start', `${start}px`);
+			hero.style.setProperty('--anim-end', `${start + range}px`);
 		};
 
-		// Scroll progress: 0 at the top, 1 once the hero has fully scrolled through.
+		// Fallback for browsers without scroll-driven animations: 0 at the top, 1 after
+		// `range` pixels of scrolling.
 		const update = () => {
-			const range = hero.offsetHeight - stage.clientHeight;
-			const p = Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / range));
+			const p = Math.min(1, Math.max(0, (window.scrollY - start) / range));
 			hero.style.setProperty('--p', p.toFixed(3));
 		};
-		window.addEventListener('scroll', update, { passive: true, signal });
-		window.addEventListener('resize', () => { measure(); update(); }, { signal });
+		if (!scrollDriven) window.addEventListener('scroll', update, { passive: true, signal });
+		window.addEventListener('resize', () => { measure(); if (!scrollDriven) update(); }, { signal });
 		measure();
-		update();
+		if (!scrollDriven) update();
 		document.fonts?.ready.then(measure); // re-measure once the web font has loaded
 
 		// Colors and font come from the design tokens; nothing is hardcoded in the visual.

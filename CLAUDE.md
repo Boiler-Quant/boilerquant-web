@@ -30,7 +30,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 | --- | --- |
 | `Header.astro` | Sticky nav, links defined once in its `links` array, hamburger menu on phones (vanilla script) |
 | `Footer.astro` | Link columns + contact; edit `columns` array |
-| `Hero.astro` | Home opening: full-screen Monte Carlo fan (`src/scripts/visuals/montecarlo.ts`) with the statement under it; on scroll the text rises, the fan fades, the paragraph appears |
+| `Hero.astro` | Home opening: full-screen Monte Carlo fan (`src/scripts/visuals/montecarlo.ts`) with the statement under it; on scroll the text rises, the fan fades, the paragraph appears, then holds. Motion is a CSS scroll-driven animation (`animation-timeline: scroll()`), with a JS `--p` fallback |
 | `Button.astro` | `variant` primary/secondary/ghost, `size` sm/md/lg, renders `<a>` when `href` given |
 | `Card.astro` | Surface container; link card with hover when `href` given |
 | `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
