@@ -15,9 +15,9 @@ const { logos, class: className } = Astro.props;
 				rel="noopener noreferrer"
 				title={l.name}
 				data-tone="light"
-				class="flex h-28 items-center justify-center rounded-md border border-edge bg-card p-6 transition-colors hover:bg-card-hover"
+				class="flex h-28 items-center justify-center rounded-md border border-edge bg-card px-3 py-2 transition-colors hover:bg-card-hover"
 			>
-				<img src={l.image} alt={l.name} loading="lazy" class="max-h-14 max-w-full object-contain" />
+				<img src={l.image} alt={l.name} loading="lazy" class="h-full w-full object-contain" />
 			</a>
 		</li>
 	))}
