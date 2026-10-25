@@ -1,0 +1,32 @@
+---
+// Site-wide footer with contact and social links.
+// TODO: confirm these links/handles with the exec board.
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-16 border-t border-neutral-200 bg-neutral-50">
+	<div
+		class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-8 text-sm text-neutral-600 md:flex-row md:items-center md:justify-between"
+	>
+		<p>&copy; {year} Boiler Quant &middot; Purdue University</p>
+		<ul class="flex flex-wrap gap-4">
+			<li><a href="mailto:boilerquant@purdue.edu" class="hover:underline">Email</a></li>
+			<li>
+				<a
+					href="https://www.instagram.com/boilerquant/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="hover:underline">Instagram</a
+				>
+			</li>
+			<li>
+				<a
+					href="https://www.linkedin.com/company/boilerquant/"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="hover:underline">LinkedIn</a
+				>
+			</li>
+		</ul>
+	</div>
+</footer>

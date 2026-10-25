@@ -1,0 +1,84 @@
+---
+// Site-wide navigation bar. Shows inline links on wide screens and a
+// hamburger button that toggles a dropdown menu on phones.
+const links = [
+	{ href: '/', label: 'Home' },
+	{ href: '/team', label: 'Team' },
+	{ href: '/news', label: 'News' },
+	{ href: '/placements', label: 'Placements' },
+	{ href: '/blog', label: 'Blog' },
+];
+
+// Mark the current page's link so users can see where they are.
+const currentPath = Astro.url.pathname;
+const isActive = (href: string) =>
+	href === '/' ? currentPath === '/' : currentPath.startsWith(href);
+---
+
+<header class="border-b border-neutral-200 bg-white">
+	<nav class="mx-auto flex max-w-5xl items-center justify-between px-4 py-3" aria-label="Main">
+		<a href="/" class="text-lg font-semibold">Boiler Quant</a>
+
+		<!-- Desktop links (hidden on small screens) -->
+		<ul class="hidden gap-6 md:flex">
+			{
+				links.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							class:list={[
+								'text-sm hover:underline',
+								isActive(link.href) ? 'font-semibold underline' : 'text-neutral-700',
+							]}
+							aria-current={isActive(link.href) ? 'page' : undefined}
+						>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<!-- Hamburger button (only on small screens) -->
+		<button
+			id="menu-toggle"
+			type="button"
+			class="rounded border border-neutral-300 px-3 py-2 text-sm md:hidden"
+			aria-controls="mobile-menu"
+			aria-expanded="false"
+		>
+			<span class="sr-only">Toggle menu</span>
+			<span aria-hidden="true">☰</span>
+		</button>
+	</nav>
+
+	<!-- Mobile dropdown menu, hidden until the button is pressed -->
+	<ul id="mobile-menu" class="hidden border-t border-neutral-200 px-4 py-2 md:hidden">
+		{
+			links.map((link) => (
+				<li>
+					<a
+						href={link.href}
+						class:list={[
+							'block py-2',
+							isActive(link.href) ? 'font-semibold' : 'text-neutral-700',
+						]}
+						aria-current={isActive(link.href) ? 'page' : undefined}
+					>
+						{link.label}
+					</a>
+				</li>
+			))
+		}
+	</ul>
+</header>
+
+<script>
+	// Runs in the browser. Toggles the mobile menu open/closed.
+	const button = document.getElementById('menu-toggle');
+	const menu = document.getElementById('mobile-menu');
+	button?.addEventListener('click', () => {
+		const open = menu?.classList.toggle('hidden') === false;
+		button.setAttribute('aria-expanded', String(open));
+	});
+</script>

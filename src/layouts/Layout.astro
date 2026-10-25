@@ -1,7 +1,9 @@
 ---
-// Shared page shell. Every page wraps itself in this so the <head>, fonts,
-// and Tailwind styles are defined in exactly one place.
+// Shared page shell. Every page wraps itself in this so the <head>, nav bar,
+// footer, and Tailwind styles are defined in exactly one place.
 import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
 
 interface Props {
 	title: string;
@@ -21,9 +23,13 @@ const { title, description = 'Boiler Quant — Purdue University’s quantitativ
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" href="/favicon.ico" />
-		<title>{title}</title>
+		<title>{title} · Boiler Quant</title>
 	</head>
-	<body class="min-h-screen bg-white text-neutral-900 antialiased">
-		<slot />
+	<body class="flex min-h-screen flex-col bg-white text-neutral-900 antialiased">
+		<Header />
+		<main class="mx-auto w-full max-w-5xl flex-1 px-4 py-10">
+			<slot />
+		</main>
+		<Footer />
 	</body>
 </html>
