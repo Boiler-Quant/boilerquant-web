@@ -8,78 +8,96 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 
 - **Astro 7** — static site framework. Pages are `.astro` files; they render to plain HTML at build time with no JavaScript shipped unless a component asks for it.
 - **TypeScript** (strict) — used in `.astro` frontmatter and any `.ts`/`.tsx` files.
-- **Tailwind CSS 4** — utility-class styling, wired in through `@tailwindcss/vite` in `astro.config.mjs`. The single stylesheet is `src/styles/global.css`. The `@tailwindcss/typography` plugin provides the `prose` class used to style rendered Markdown.
-- **React 19** via `@astrojs/react` — reserved for interactive components only. Default to `.astro` components; reach for React when a component needs client-side state or event handling, and give it a `client:*` directive (e.g. `client:load`, `client:visible`) or it will render as static HTML.
-- **Deployment target**: Vercel (same as the old site). Astro's default static output works there with no adapter.
+- **Tailwind CSS 4** — utility-class styling via `@tailwindcss/vite`. The one stylesheet is `src/styles/global.css`; it also holds the design tokens (see below). `@tailwindcss/typography` provides the `prose` class for rendered Markdown.
+- **React 19** via `@astrojs/react` — reserved for interactive components only (planned: the home-page trading simulation). Default to `.astro` components; use React only when a component needs client-side state, and give it a `client:*` directive.
+- **IBM Plex Sans / Mono** — self-hosted via `@fontsource/*`, imported in `global.css`.
+- **Deployment target**: Vercel. Astro's default static output needs no adapter.
+
+## Design system ("Terminal" direction: dark everywhere, gold accents)
+
+Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex color or font name anywhere else.**
+
+- **Palette tokens** (`@theme`): `gold`, `gold-tint`, `gold-hover`, `gold-pressed`, `gold-deep`, `black`, `ink`, `graphite`, `ash`, `light`, `white`, `warning`, `gain`, `loss`. Use as `bg-gold`, `text-ash`, `border-graphite`, etc. Fonts: `font-sans` (Plex Sans), `font-mono` (Plex Mono).
+- **Semantic roles** (CSS variables mapped through `@theme inline`): `surface`, `fg`, `muted`, `card`, `card-hover`, `edge`, `heading`, `accent`, `accent-hover`, `btn`, `btn-fg`, `btn-hover`. Components use these, e.g. `bg-card text-fg border-edge text-accent`. The default tone is dark; wrapping anything in `data-tone="light"` flips every role to light values (used for logo tiles).
+- **Text utilities**: `eyebrow` (mono uppercase label in accent), `meta` (mono small muted), `site-container` (centered max-width column with side padding).
+- **Markdown**: `.prose` is remapped to the tokens, so it works on dark and light.
+- Review everything at `/styleguide` (hidden, `noindex`). Update it when adding a token or component.
+
+## Components (`src/components/`)
+
+| Component | Purpose |
+| --- | --- |
+| `Header.astro` | Sticky nav, links defined once in its `links` array, hamburger menu on phones (vanilla script) |
+| `Footer.astro` | Link columns + contact; edit `columns` array |
+| `Hero.astro` | Home opening: canvas market visual + statement that expands into a paragraph on scroll |
+| `Button.astro` | `variant` primary/secondary/ghost, `size` sm/md/lg, renders `<a>` when `href` given |
+| `Card.astro` | Surface container; link card with hover when `href` given |
+| `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
+| `PageHeader.astro` | Title block at the top of inner pages |
+| `PostCard.astro` | Wide horizontal card (thumbnail left) for blog/news/project lists, one per row |
+| `Article.astro` | Shell for a single post/news/project page (back link, title, meta, `prose` body) |
+| `ExecCard.astro` | Exec board member: square photo via `<Image>`, name, role, LinkedIn |
+| `EducationCards.astro` | Rotating tabbed cards for the four prep tracks; data in `src/data/education.json` |
+| `LogoGrid.astro` | Company logo grid, light-toned tiles, links out |
+
+## Pages
+
+```
+/            Home: Hero, stats band, "What We Do" cards (minimal by design; future trading sim)
+/about       Intro header, Education (rotating cards), Executive Board (row 1: President + VP; row 2: Projects, People, Operations, Marketing, Relations)
+/projects    Current + completed projects from the `projects` collection; /projects/[id]
+/placements  "Where We Are" logo grid from src/data/logos.json
+/news        News & events list (one card per row); /news/[id]
+/blog        Blog list (one card per row); /blog/[id]
+/join        Recruitment status (currently: closed for Fall 2026)
+/styleguide  Hidden design review page
+/404         Not found
+```
+
+## Where content lives
+
+- **Blog / news / projects**: Markdown in `src/content/{blog,news,projects}/`. Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`.
+- **Exec board**: `src/data/executives.json` (keys like `"Full Name"`, `Role`, `Photo`, `LinkedIn`). The About page matches `Photo` filenames to headshots in `src/assets/exec_pictures/` via `import.meta.glob`. Row placement is by `Role` string, so roles must match exactly.
+- **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
+- **Education tracks**: `src/data/education.json` (`title`, `description`, `lead`).
+- **Home stats and "What We Do" copy**: arrays at the top of `src/pages/index.astro`.
+- **Images**: photos go in `src/assets/` (Astro optimises them when imported); logos and files served untouched go in `public/`. New raw images go through `uploads/` + `node scripts/process-images.mjs`; never commit multi-MB originals.
 
 ## Project layout
 
 ```
 src/
-  pages/           Each file here becomes a URL. index.astro -> /, about.astro -> /about
-    blog/          index.astro (list) + [id].astro (one page per post)
-    news/          index.astro (list) + [id].astro (one page per item)
-    404.astro      "Page not found" page
-  layouts/         Layout.astro: <head>, Header, Footer, imports global.css
-  components/      Header.astro (nav + mobile hamburger), Footer.astro, future UI pieces
-  content/         Markdown content, validated by content.config.ts
-    blog/          Blog posts
-    news/          News items and events
-  content.config.ts  Collection schemas (which frontmatter fields exist, their types)
-  data/            Structured JSON data imported by pages
-    executives.json  Exec board (from the old site; keys like "Full Name", "Role", "Index")
-    logos.json       Placement/sponsor company logos (name, image path, website)
-  styles/          global.css — imports Tailwind + typography plugin
-  assets/          Images that Astro should optimise at build time (use <Image> from astro:assets)
-    exec_pictures/   Exec/member headshots (compressed JPEGs)
-public/            Static files copied verbatim to the site root (favicon, images, PDFs)
-  club_logos/      Boiler Quant logo + submark in black/gold/white (PNG, solid backgrounds)
-  company_logos/   Placement/sponsor logos referenced by src/data/logos.json
+  pages/           Routes (see above). [id].astro files generate one page per content entry
+  layouts/         Layout.astro: <head>, Header, Footer; props title, description, noindex, fullBleed
+  components/      See table above
+  content/         Markdown collections (blog, news, projects)
+  content.config.ts
+  data/            JSON data (executives, logos, education)
+  lib/format.ts    formatDate, byDateDesc helpers
+  assets/          Optimised images (exec_pictures/)
+  styles/global.css  Design system + Tailwind entry
+public/            club_logos/, company_logos/, favicon
 uploads/           Drop folder for raw images (git-ignored). See uploads/README.md
-scripts/process-images.mjs  Sorts + compresses uploads/ into src/assets and public/
-astro.config.mjs   Astro integrations (React, Tailwind)
-tsconfig.json      Extends astro/tsconfigs/strict; JSX configured for React
-dist/              Build output (generated; not committed)
+scripts/process-images.mjs
 ```
-
-## Where content lives
-
-- **Blog posts**: `src/content/blog/*.md`. **News & events**: `src/content/news/*.md`.
-  Both are Astro content collections using the `glob` loader. Schemas live in
-  `src/content.config.ts` (Zod, imported from `astro/zod`). Filename = URL slug = `entry.id`.
-  Entries with `draft: true` are filtered out in every `getCollection` call.
-  Render a body with `const { Content } = await render(entry)` from `astro:content`.
-- **Exec board / logos**: `src/data/*.json`, imported directly (`import execs from '../data/executives.json'`).
-  TypeScript infers the type from the file. Keep data in `src/data/`, not `public/`,
-  so it is type-checked and only shipped where used. Images those files point to
-  (e.g. `/people/x.jpg`) belong in `public/`.
-- **Page copy** (headings, intro sentences) is written directly in the `.astro` page files.
-- **Images**: photos go in `src/assets/` and are imported into pages so Astro can resize/convert
-  them; logos and other files that should be served untouched go in `public/` and are referenced
-  by URL path (e.g. `/company_logos/sig.png`). New raw images go through `uploads/` +
-  `node scripts/process-images.mjs`; never commit multi-MB originals.
-
-Pages: `/` (home: minimal, future trading simulation only; club info lives on /about), `/about`, `/team`, `/news` + `/news/[id]`,
-`/placements`, `/blog` + `/blog/[id]`, `/404`. Nav links are defined once in `Header.astro`.
 
 ## Commands
 
 ```sh
-npm install        # install dependencies (first time, or after package.json changes)
-npm run dev        # dev server with live reload at http://localhost:4321
+npm install        # install dependencies
+npm run dev        # dev server at http://localhost:4321 (runs in background; stop with `npx astro dev stop`)
 npm run build      # production build into dist/ — must pass before merging
-npm run preview    # serve the built dist/ locally to check it
+npm run preview    # serve dist/ locally
 npx astro check    # TypeScript + template type-checking
-npx astro add <x>  # add an integration (edits config for you)
 ```
 
-Run `npm run build` after any non-trivial change; it catches broken imports and type errors.
+Run `npm run build` and `npx astro check` after any non-trivial change.
 
 ## Conventions
 
-- Every page uses `src/layouts/Layout.astro` and passes a `title` (the layout appends " · Boiler Quant").
-- Styling is deliberately plain for now (neutral grays, simple layout). Visual design is a later step; don't polish visuals unless asked.
-- Prefer Tailwind utility classes in markup over custom CSS.
-- Keep components small and put them in `src/components/`.
+- Every page uses `Layout.astro` and passes a `title` (the layout appends " · Boiler Quant").
+- Use the semantic role utilities (`bg-card`, `text-muted`, …) rather than raw palette names in components, so tone switching keeps working.
+- Prefer Tailwind utilities in markup over custom CSS; shared patterns become `@utility` rules in `global.css` or a component.
+- Keep content out of component code so non-developers can edit it.
 - The repo owner is new to web development: explain changes in plain language and define jargon.
-- `AGENTS.md` was generated by Astro's scaffolder and links to the official docs; keep it in sync if the stack changes.
+- `AGENTS.md` was generated by Astro's scaffolder and links to the official docs.

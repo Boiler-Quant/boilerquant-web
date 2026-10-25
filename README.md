@@ -71,10 +71,31 @@ Details about the event go here.
 The list of allowed fields for both collections is defined in `src/content.config.ts`.
 To add a new field (say, `image`), add it there and it becomes available in every post.
 
+## Adding a project
+
+Same idea again, in `src/content/projects/`:
+
+```md
+---
+title: "Options volatility surface"
+description: "One sentence shown in the project list."
+date: 2026-09-01             # when the project started
+status: current              # "current" or "completed"
+lead: "Member Name"          # optional
+members: ["A", "B"]          # optional
+tag: "Options"               # optional short label
+---
+
+What the project is, what's been done, what's next.
+```
+
+Current projects appear at the top of `/projects`; completed ones in the section below.
+
 ## Editing the exec board or placement logos
 
 - `src/data/executives.json` — one object per exec board member (name, role, major, photo, LinkedIn).
 - `src/data/logos.json` — one object per company logo on the Placements page.
+- `src/data/education.json` — the four prep-session tracks shown on the About page.
 
 Edit the JSON, save, and the pages update. Photos and logo images referenced in these
 files should be placed under `public/` (for example `public/people/name.jpg`).
@@ -83,10 +104,11 @@ files should be placed under `public/` (for example `public/people/name.jpg`).
 
 - `src/pages/` — one file per page on the site; `[id].astro` files generate one page per content item
 - `src/layouts/Layout.astro` — the shared page shell (nav bar, footer, `<head>` tags)
-- `src/components/` — reusable pieces of UI (`Header.astro`, `Footer.astro`)
+- `src/components/` — reusable pieces of UI (buttons, cards, nav, footer, …)
+- `src/styles/global.css` — the design system: all colors and fonts live here
+- `/styleguide` — hidden page showing every color, text style, and component
 - `src/content/` — blog posts and news/events as Markdown
 - `src/data/` — structured data as JSON (exec board, logos)
-- `src/styles/global.css` — Tailwind entry point and any custom styles
 - `public/` — images and other files served as-is
 
 See `CLAUDE.md` for a fuller description of the stack and conventions.
