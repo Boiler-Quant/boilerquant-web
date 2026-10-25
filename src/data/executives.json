@@ -1,0 +1,79 @@
+[
+  {
+    "Full Name": "Parth Hathalia",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/parthH.jpg",
+    "Role": "President",
+    "Major": "Computer Science and Math",
+    "Year": "Junior",
+    "Interests": "Tennis, Movies, Cardistry",
+    "Index": 1,
+    "LinkedIn": "https://www.linkedin.com/in/parth-hathalia/"
+  },
+  {
+    "Full Name": "Caleb Suhy",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/caleb.jpg",
+    "Role": "Vice President",
+    "Major": "Electrical Engineering and Physics",
+    "Year": "",
+    "Interests": "Poker, Travel",
+    "Index": 2,
+    "LinkedIn": "https://www.linkedin.com/in/caleb-suhy/"
+  },
+  {
+    "Full Name": "Sandilya Kambhampati",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/sandi.jpg",
+    "Role": "Director of Operations",
+    "Major": "Computer Science and Data Science",
+    "Year": "",
+    "Interests": "Skateboarding, Violin, NYT Games",
+    "Index": 3,
+    "LinkedIn": "https://www.linkedin.com/in/kprsandilya/"
+  },
+  {
+    "Full Name": "Maria Clara Valle Gomes",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/maria.jpg",
+    "Role": "Director of Relations",
+    "Major": "Quantitative Economics",
+    "Year": "",
+    "Interests": "Photography, Art History, Card Games",
+    "Index": 4,
+    "LinkedIn": "https://www.linkedin.com/in/mariaclaravgomes/"
+  },
+  {
+    "Full Name": "Mihika Shrivastava",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/mihika.jpg",
+    "Role": "Director of Marketing",
+    "Major": "Data Science and Artificial Intelligence",
+    "Year": "",
+    "Interests": "Gymnastics, Pickleball, Sudoku",
+    "Index": 5,
+    "LinkedIn": "https://www.linkedin.com/in/mihikashrivastava/"
+  },
+  {
+    "Full Name": "Nathan Li",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/nathan.jpeg",
+    "Role": "Director of Projects",
+    "Major": "Computer Science, Math, and Statistics",
+    "Year": "",
+    "Interests": "Traveling, Guitar, Puzzle Games",
+    "Index": 6,
+    "LinkedIn": "https://www.linkedin.com/in/nathan-nxli/"
+  },
+  {
+    "Full Name": "Parth Gupta",
+    "Email Address": "boilerquant@purdue.edu",
+    "Photo": "/people/parthG.jpg",
+    "Role": "Director of People",
+    "Major": "Computer Engineering",
+    "Year": "",
+    "Interests": "Day/Swing Trading, Cooking",
+    "Index": 7,
+    "LinkedIn": "https://www.linkedin.com/in/parth-gupta-b1849427b/"
+  }
+]

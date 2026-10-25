@@ -1,5 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
+// Importing a JSON file reads it once at build time. TypeScript infers the
+// shape of each entry from the file, so typos in field names are caught.
+import executives from '../data/executives.json';
+
+// Sort by the "Index" field so the order matches the data file's intent.
+const execs = [...executives].sort((a, b) => a.Index - b.Index);
 ---
 
 <Layout title="Team">
@@ -7,4 +13,16 @@ import Layout from '../layouts/Layout.astro';
 	<p class="mt-4 text-neutral-600">
 		Meet the executive board and members who run Boiler Quant.
 	</p>
+
+	<h2 class="mt-10 text-xl font-semibold">Executive Board</h2>
+	<ul class="mt-4 list-disc space-y-1 pl-6">
+		{
+			execs.map((exec) => (
+				<li>
+					<span class="font-medium">{exec['Full Name']}</span>
+					<span class="text-neutral-500"> — {exec.Role}</span>
+				</li>
+			))
+		}
+	</ul>
 </Layout>
