@@ -16,7 +16,7 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 
 ```
 src/
-  pages/           Each file here becomes a URL. index.astro -> /, team.astro -> /team
+  pages/           Each file here becomes a URL. index.astro -> /, about.astro -> /about
     blog/          index.astro (list) + [id].astro (one page per post)
     news/          index.astro (list) + [id].astro (one page per item)
     404.astro      "Page not found" page
@@ -49,7 +49,7 @@ dist/              Build output (generated; not committed)
   (e.g. `/people/x.jpg`) belong in `public/`.
 - **Page copy** (headings, intro sentences) is written directly in the `.astro` page files.
 
-Pages: `/` (home, future trading simulation), `/team`, `/news` + `/news/[id]`,
+Pages: `/` (home: minimal, future trading simulation only; club info lives on /about), `/about`, `/team`, `/news` + `/news/[id]`,
 `/placements`, `/blog` + `/blog/[id]`, `/404`. Nav links are defined once in `Header.astro`.
 
 ## Commands
