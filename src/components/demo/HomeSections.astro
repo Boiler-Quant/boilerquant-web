@@ -1,0 +1,56 @@
+---
+import type { Tone } from './directions';
+interface Props { stats: Tone; cards: Tone; cta: Tone }
+const { stats, cards, cta } = Astro.props;
+const numbers = [
+	['120+', 'active members'],
+	['30', 'firms where alumni work'],
+	['8', 'project teams this semester'],
+	['3', 'competitions entered per year'],
+];
+const pillars = [
+	['Projects', 'Semester-long teams build and backtest strategies, from market making to statistical arbitrage.'],
+	['Education', 'Weekly workshops cover the math, programming, and market structure behind quant trading.'],
+	['Competitions', 'We train for and compete in trading competitions hosted by firms and other universities.'],
+];
+---
+
+<section data-tone={stats} class="border-y border-(--border)">
+	<div class="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-14 md:grid-cols-4">
+		{numbers.map(([n, label]) => (
+			<div>
+				<p class="font-mono text-4xl font-medium text-(--accent)">{n}</p>
+				<p class="mt-1 text-sm text-(--muted)">{label}</p>
+			</div>
+		))}
+	</div>
+</section>
+
+<section data-tone={cards}>
+	<div class="mx-auto max-w-6xl px-6 py-20">
+		<p class="font-mono text-xs tracking-wider text-(--accent) uppercase">What we do</p>
+		<h2 class="mt-3 max-w-2xl text-3xl font-semibold tracking-tight text-(--heading)">Three ways to get your hands on real markets.</h2>
+		<div class="mt-10 grid gap-5 md:grid-cols-3">
+			{pillars.map(([title, body]) => (
+				<a href="#" class="rounded-lg border border-(--border) bg-(--card) p-6 transition-colors hover:bg-(--card-hover)">
+					<h3 class="text-lg font-semibold">{title}</h3>
+					<p class="mt-2 text-sm leading-relaxed text-(--muted)">{body}</p>
+					<p class="mt-5 text-sm font-medium text-(--accent)">Learn more →</p>
+				</a>
+			))}
+		</div>
+	</div>
+</section>
+
+<section data-tone={cta}>
+	<div class="mx-auto flex max-w-6xl flex-col items-start gap-6 px-6 py-20 md:flex-row md:items-center md:justify-between">
+		<div>
+			<h2 class="text-3xl font-semibold tracking-tight text-(--heading)">Interested in sponsoring or joining?</h2>
+			<p class="mt-2 max-w-xl text-(--muted)">We partner with firms for speaker events, workshops, and recruiting. Students can join at any point in the semester.</p>
+		</div>
+		<div class="flex gap-3">
+			<a href="#" class="rounded-md bg-(--btn-bg) px-5 py-3 text-sm font-medium text-(--btn-fg) hover:bg-(--btn-hover)">Partner with us</a>
+			<a href="#" class="rounded-md border border-(--accent) px-5 py-3 text-sm font-medium text-(--accent) hover:bg-(--card-hover)">Join the club</a>
+		</div>
+	</div>
+</section>

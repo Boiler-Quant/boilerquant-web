@@ -1,0 +1,9 @@
+---
+import DemoLayout from '../../../components/demo/DemoLayout.astro';
+import BlogList from '../../../components/demo/BlogList.astro';
+import { directions } from '../../../components/demo/directions';
+const d = directions.b;
+---
+<DemoLayout dir="b" page="blog" bodyTone={d.blog.list}>
+	<BlogList {...d.blog} />
+</DemoLayout>
