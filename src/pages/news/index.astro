@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import PostCard from '../../components/PostCard.astro';
-import { formatDate, byDateDesc } from '../../lib/format';
+import { formatDate, formatShortDate, byDateDesc } from '../../lib/format';
 
 const items = (await getCollection('news', ({ data }) => !data.draft)).sort(byDateDesc);
 ---
@@ -17,7 +17,7 @@ const items = (await getCollection('news', ({ data }) => !data.draft)).sort(byDa
 				title={item.data.title}
 				summary={item.data.description}
 				tag={item.data.type}
-				label={item.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+				label={formatShortDate(item.data.date)}
 				meta={[formatDate(item.data.date), item.data.location].filter(Boolean).join(' · ')}
 			/>
 		))}

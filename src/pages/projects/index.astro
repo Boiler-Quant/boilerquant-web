@@ -9,7 +9,7 @@ import { formatDate, byDateDesc } from '../../lib/format';
 const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
 const current = all.filter((p) => p.data.status === 'current');
 const completed = all.filter((p) => p.data.status === 'completed');
-const season = (d: Date) => `${d.getMonth() < 6 ? 'Spring' : 'Fall'} ${d.getFullYear()}`;
+const season = (d: Date) => `${d.getUTCMonth() < 6 ? 'Spring' : 'Fall'} ${d.getUTCFullYear()}`;
 ---
 
 <Layout title="Projects">

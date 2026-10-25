@@ -20,7 +20,7 @@
    1. Brand palette + fonts. These become Tailwind utilities automatically:
       bg-gold, text-ash, border-graphite, font-sans, font-mono, ...
    -------------------------------------------------------------------------- */
-@theme {
+@theme static {
 	--font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
 	--font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
 
