@@ -1,5 +1,5 @@
 // Defines the site's "content collections": folders of Markdown files that
-// Astro reads at build time and validates against a schema. If a post is
+// Astro reads at build time and validates against a schema. If an entry is
 // missing a required field (or has a typo in one), `npm run build` fails with
 // a clear message instead of publishing a broken page.
 import { defineCollection } from 'astro:content';
@@ -14,6 +14,7 @@ const blog = defineCollection({
 		description: z.string(),
 		date: z.coerce.date(), // "2026-10-24" in the file becomes a real Date
 		author: z.string().optional(),
+		tag: z.string().optional(), // short category label, e.g. "Education"
 		draft: z.boolean().default(false), // true = hidden from the site
 	}),
 });
@@ -30,4 +31,18 @@ const news = defineCollection({
 	}),
 });
 
-export const collections = { blog, news };
+const projects = defineCollection({
+	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		date: z.coerce.date(), // when the project started
+		status: z.enum(['current', 'completed']).default('current'),
+		lead: z.string().optional(),
+		members: z.array(z.string()).optional(),
+		tag: z.string().optional(), // e.g. "Market making"
+		draft: z.boolean().default(false),
+	}),
+});
+
+export const collections = { blog, news, projects };

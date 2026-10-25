@@ -3,6 +3,7 @@ title: "Welcome to the new Boiler Quant site"
 description: "Why we rebuilt the website and what's coming next."
 date: 2026-10-24
 author: "Boiler Quant Exec Board"
+tag: "Announcements"
 ---
 
 We rebuilt the Boiler Quant website from scratch this fall. The new site is faster,
