@@ -31,29 +31,43 @@ import education from '../data/education.json';
 </div>
 
 <script>
-	const root = document.getElementById('edu')!;
-	const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role=tab]')];
-	const panels = [...root.querySelectorAll<HTMLElement>('[role=tabpanel]')];
-	let current = 0;
-	let timer: number | undefined;
+	// Set up on every page that has the cards (astro:page-load fires on first load and
+	// after each client-side navigation). The returned cleanup stops the auto-advance
+	// timer when the user navigates away.
+	const init = (root: HTMLElement) => {
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+		const panels = [...root.querySelectorAll<HTMLElement>('[role=tabpanel]')];
+		let current = 0;
+		let timer: number | undefined;
 
-	const show = (i: number) => {
-		current = i;
-		tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
-		panels.forEach((p, k) => p.classList.toggle('hidden', k !== i));
-		// The underline uses a CSS transition on aria-selected; re-sync the indicator.
-		tabs.forEach((t, k) => t.querySelector('span')?.classList.toggle('scale-x-100', k === i));
-		tabs.forEach((t, k) => t.querySelector('span')?.classList.toggle('scale-x-0', k !== i));
-	};
-	const start = () => {
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-		timer = window.setInterval(() => show((current + 1) % tabs.length), 6000);
-	};
-	const stop = () => { if (timer) clearInterval(timer); timer = undefined; };
+		const show = (i: number) => {
+			current = i;
+			tabs.forEach((t, k) => t.setAttribute('aria-selected', String(k === i)));
+			panels.forEach((p, k) => p.classList.toggle('hidden', k !== i));
+			// The underline uses a CSS transition on aria-selected; re-sync the indicator.
+			tabs.forEach((t, k) => t.querySelector('span')?.classList.toggle('scale-x-100', k === i));
+			tabs.forEach((t, k) => t.querySelector('span')?.classList.toggle('scale-x-0', k !== i));
+		};
+		const start = () => {
+			if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+			timer = window.setInterval(() => show((current + 1) % tabs.length), 6000);
+		};
+		const stop = () => { if (timer) clearInterval(timer); timer = undefined; };
 
-	tabs.forEach((t, i) => t.addEventListener('click', () => { stop(); show(i); }));
-	root.addEventListener('mouseenter', stop);
-	root.addEventListener('mouseleave', () => { if (!timer) start(); });
-	show(0);
-	start();
+		tabs.forEach((t, i) => t.addEventListener('click', () => { stop(); show(i); }));
+		root.addEventListener('mouseenter', stop);
+		root.addEventListener('mouseleave', () => { if (!timer) start(); });
+		show(0);
+		start();
+
+		return stop;
+	};
+
+	let cleanup: (() => void) | undefined;
+	document.addEventListener('astro:page-load', () => {
+		cleanup?.();
+		cleanup = undefined;
+		const root = document.getElementById('edu');
+		if (root) cleanup = init(root);
+	});
 </script>

@@ -164,8 +164,11 @@ const type = [
 
 <script>
 	// Fill in the live hex value of each palette token from the stylesheet.
-	const styles = getComputedStyle(document.documentElement);
-	document.querySelectorAll<HTMLElement>('[data-token]').forEach((el) => {
-		el.textContent = styles.getPropertyValue(el.dataset.token!).trim() || '(unset)';
+	// Runs on first load and after each client-side navigation to this page.
+	document.addEventListener('astro:page-load', () => {
+		const styles = getComputedStyle(document.documentElement);
+		document.querySelectorAll<HTMLElement>('[data-token]').forEach((el) => {
+			el.textContent = styles.getPropertyValue(el.dataset.token!).trim() || '(unset)';
+		});
 	});
 </script>

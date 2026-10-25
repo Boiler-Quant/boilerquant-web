@@ -68,17 +68,26 @@ const isActive = (href: string) => (href === '/' ? currentPath === '/' : current
 </header>
 
 <script>
-	const button = document.getElementById('menu-toggle')!;
-	const menu = document.getElementById('mobile-menu')!;
-	const setOpen = (open: boolean) => {
-		menu.classList.toggle('hidden', !open);
-		button.setAttribute('aria-expanded', String(open));
-		button.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
-		button.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
-	};
-	button.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
-	// Close when a link is tapped or the window grows past the phone breakpoint.
-	menu.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+	// With client-side routing (ClientRouter) this module runs once per visit, but the
+	// header markup is re-rendered on every page swap. So element wiring happens inside
+	// astro:page-load (fires on first load and after each navigation); window/document
+	// listeners are registered once and call whichever setOpen is current.
+	let setOpen = (_open: boolean) => {};
+	document.addEventListener('astro:page-load', () => {
+		const button = document.getElementById('menu-toggle');
+		const menu = document.getElementById('mobile-menu');
+		if (!button || !menu) return;
+		setOpen = (open: boolean) => {
+			menu.classList.toggle('hidden', !open);
+			button.setAttribute('aria-expanded', String(open));
+			button.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
+			button.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+		};
+		button.addEventListener('click', () => setOpen(menu.classList.contains('hidden')));
+		// Close when a link is tapped.
+		menu.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+	});
+	// Close when the window grows past the phone breakpoint, or on Escape.
 	window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 	document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
 </script>
