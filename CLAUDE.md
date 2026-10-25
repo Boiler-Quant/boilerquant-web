@@ -8,7 +8,7 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 
 - **Astro 7** — static site framework. Pages are `.astro` files; they render to plain HTML at build time with no JavaScript shipped unless a component asks for it.
 - **TypeScript** (strict) — used in `.astro` frontmatter and any `.ts`/`.tsx` files.
-- **Tailwind CSS 4** — utility-class styling, wired in through `@tailwindcss/vite` in `astro.config.mjs`. The single stylesheet is `src/styles/global.css`.
+- **Tailwind CSS 4** — utility-class styling, wired in through `@tailwindcss/vite` in `astro.config.mjs`. The single stylesheet is `src/styles/global.css`. The `@tailwindcss/typography` plugin provides the `prose` class used to style rendered Markdown.
 - **React 19** via `@astrojs/react` — reserved for interactive components only. Default to `.astro` components; reach for React when a component needs client-side state or event handling, and give it a `client:*` directive (e.g. `client:load`, `client:visible`) or it will render as static HTML.
 - **Deployment target**: Vercel (same as the old site). Astro's default static output works there with no adapter.
 
@@ -16,23 +16,41 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 
 ```
 src/
-  pages/        Each file here becomes a URL. index.astro -> /, about.astro -> /about
-  layouts/      Page shells. Layout.astro owns <head>, metadata, and imports global.css
-  components/   Reusable UI pieces (.astro for static, .tsx for React)
-  styles/       global.css — imports Tailwind; put any custom CSS/theme tokens here
-public/         Static files copied verbatim to the site root (favicon, images, PDFs)
-astro.config.mjs  Astro integrations (React, Tailwind)
-tsconfig.json     Extends astro/tsconfigs/strict; JSX configured for React
-dist/             Build output (generated; not committed)
+  pages/           Each file here becomes a URL. index.astro -> /, team.astro -> /team
+    blog/          index.astro (list) + [id].astro (one page per post)
+    news/          index.astro (list) + [id].astro (one page per item)
+    404.astro      "Page not found" page
+  layouts/         Layout.astro: <head>, Header, Footer, imports global.css
+  components/      Header.astro (nav + mobile hamburger), Footer.astro, future UI pieces
+  content/         Markdown content, validated by content.config.ts
+    blog/          Blog posts
+    news/          News items and events
+  content.config.ts  Collection schemas (which frontmatter fields exist, their types)
+  data/            Structured JSON data imported by pages
+    executives.json  Exec board (from the old site; keys like "Full Name", "Role", "Index")
+    logos.json       Placement/sponsor company logos (name, image path, website)
+  styles/          global.css — imports Tailwind + typography plugin
+public/            Static files copied verbatim to the site root (favicon, images, PDFs)
+astro.config.mjs   Astro integrations (React, Tailwind)
+tsconfig.json      Extends astro/tsconfigs/strict; JSX configured for React
+dist/              Build output (generated; not committed)
 ```
 
 ## Where content lives
 
-Right now page content is written directly in the `.astro` files under `src/pages/`.
-When structured content is added (officers, events, sponsors, etc.), use
-[Astro content collections](https://docs.astro.build/en/guides/content-collections/):
-put the data in `src/content/<collection>/` as Markdown or JSON and define the schema
-in `src/content.config.ts`. Keep content out of component code so non-developers can edit it.
+- **Blog posts**: `src/content/blog/*.md`. **News & events**: `src/content/news/*.md`.
+  Both are Astro content collections using the `glob` loader. Schemas live in
+  `src/content.config.ts` (Zod, imported from `astro/zod`). Filename = URL slug = `entry.id`.
+  Entries with `draft: true` are filtered out in every `getCollection` call.
+  Render a body with `const { Content } = await render(entry)` from `astro:content`.
+- **Exec board / logos**: `src/data/*.json`, imported directly (`import execs from '../data/executives.json'`).
+  TypeScript infers the type from the file. Keep data in `src/data/`, not `public/`,
+  so it is type-checked and only shipped where used. Images those files point to
+  (e.g. `/people/x.jpg`) belong in `public/`.
+- **Page copy** (headings, intro sentences) is written directly in the `.astro` page files.
+
+Pages: `/` (home, future trading simulation), `/team`, `/news` + `/news/[id]`,
+`/placements`, `/blog` + `/blog/[id]`, `/404`. Nav links are defined once in `Header.astro`.
 
 ## Commands
 
@@ -49,7 +67,8 @@ Run `npm run build` after any non-trivial change; it catches broken imports and 
 
 ## Conventions
 
-- Every page uses `src/layouts/Layout.astro` and passes a `title`.
+- Every page uses `src/layouts/Layout.astro` and passes a `title` (the layout appends " · Boiler Quant").
+- Styling is deliberately plain for now (neutral grays, simple layout). Visual design is a later step; don't polish visuals unless asked.
 - Prefer Tailwind utility classes in markup over custom CSS.
 - Keep components small and put them in `src/components/`.
 - The repo owner is new to web development: explain changes in plain language and define jargon.
