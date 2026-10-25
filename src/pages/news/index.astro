@@ -1,35 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostCard from '../../components/PostCard.astro';
+import { formatDate, byDateDesc } from '../../lib/format';
 
-// Load every news item / event, skip drafts, newest first.
-const items = (await getCollection('news', ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
-
-const formatDate = (d: Date) =>
-	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const items = (await getCollection('news', ({ data }) => !data.draft)).sort(byDateDesc);
 ---
 
 <Layout title="News & Events">
-	<h1 class="text-3xl font-bold">News &amp; Events</h1>
-	<p class="mt-4 text-neutral-600">Upcoming events and announcements from the club.</p>
-
-	<ul class="mt-8 divide-y divide-neutral-200">
-		{
-			items.map((item) => (
-				<li class="py-4">
-					<span class="text-xs uppercase tracking-wide text-neutral-500">{item.data.type}</span>
-					<a href={`/news/${item.id}`} class="block text-lg font-semibold hover:underline">
-						{item.data.title}
-					</a>
-					<p class="text-sm text-neutral-500">
-						{formatDate(item.data.date)}
-						{item.data.location && ` · ${item.data.location}`}
-					</p>
-					<p class="mt-1 text-neutral-700">{item.data.description}</p>
-				</li>
-			))
-		}
-	</ul>
+	<PageHeader title="News & Events" lede="Upcoming events and announcements from the club." />
+	<section class="site-container max-w-4xl space-y-4 py-12">
+		{items.map((item) => (
+			<PostCard
+				href={`/news/${item.id}`}
+				title={item.data.title}
+				summary={item.data.description}
+				tag={item.data.type}
+				label={item.data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+				meta={[formatDate(item.data.date), item.data.location].filter(Boolean).join(' · ')}
+			/>
+		))}
+	</section>
 </Layout>

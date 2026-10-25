@@ -1,10 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import Card from '../components/Card.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+const numbers = [
+	['120+', 'active members'],
+	['30', 'firms where alumni work'],
+	['8', 'project teams this semester'],
+	['3', 'competitions entered per year'],
+];
+const pillars = [
+	['Projects', 'Semester-long teams build and backtest strategies, from market making to statistical arbitrage.', '/projects'],
+	['Education', 'Weekly prep sessions cover the math, programming, and market structure behind quant trading.', '/about#education'],
+	['Competitions', 'We train for and compete in trading competitions hosted by firms and other universities.', '/news'],
+];
 ---
 
-<Layout title="Home">
-	<h1 class="text-3xl font-bold">Boiler Quant</h1>
-	<p class="mt-4 text-neutral-600">
-		Purdue University's quantitative finance club. An interactive trading simulation will live here.
-	</p>
+<Layout title="Home" fullBleed>
+	<Hero />
+
+	<section class="border-y border-edge">
+		<div class="site-container grid grid-cols-2 gap-8 py-14 md:grid-cols-4">
+			{numbers.map(([n, label]) => (
+				<div>
+					<p class="font-mono text-4xl font-medium text-accent">{n}</p>
+					<p class="mt-1 text-sm text-muted">{label}</p>
+				</div>
+			))}
+		</div>
+	</section>
+
+	<section class="site-container py-20">
+		<SectionHeading title="What We Do" />
+		<div class="mt-10 grid gap-5 md:grid-cols-3">
+			{pillars.map(([title, body, href]) => (
+				<Card href={href}>
+					<h3 class="text-lg font-semibold">{title}</h3>
+					<p class="mt-2 text-sm leading-relaxed text-muted">{body}</p>
+					<p class="mt-5 text-sm font-medium text-accent">Learn more →</p>
+				</Card>
+			))}
+		</div>
+	</section>
 </Layout>

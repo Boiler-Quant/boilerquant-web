@@ -1,34 +1,25 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import PostCard from '../../components/PostCard.astro';
+import { formatDate, byDateDesc } from '../../lib/format';
 
-// Load every blog post, skip drafts, newest first.
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-	(a, b) => b.data.date.getTime() - a.data.date.getTime(),
-);
-
-const formatDate = (d: Date) =>
-	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(byDateDesc);
 ---
 
 <Layout title="Blog">
-	<h1 class="text-3xl font-bold">Blog</h1>
-	<p class="mt-4 text-neutral-600">Writing from members on quant finance, projects, and club life.</p>
-
-	<ul class="mt-8 divide-y divide-neutral-200">
-		{
-			posts.map((post) => (
-				<li class="py-4">
-					<a href={`/blog/${post.id}`} class="text-lg font-semibold hover:underline">
-						{post.data.title}
-					</a>
-					<p class="text-sm text-neutral-500">
-						{formatDate(post.data.date)}
-						{post.data.author && ` · ${post.data.author}`}
-					</p>
-					<p class="mt-1 text-neutral-700">{post.data.description}</p>
-				</li>
-			))
-		}
-	</ul>
+	<PageHeader title="Notes from the club" lede="Writing from members on quant finance, project work, and life in the club." />
+	<section class="site-container max-w-4xl space-y-4 py-12">
+		{posts.map((post, i) => (
+			<PostCard
+				href={`/blog/${post.id}`}
+				title={post.data.title}
+				summary={post.data.description}
+				tag={post.data.tag}
+				label={`fig. ${String(posts.length - i).padStart(2, '0')}`}
+				meta={[post.data.author, formatDate(post.data.date)].filter(Boolean).join(' · ')}
+			/>
+		))}
+	</section>
 </Layout>

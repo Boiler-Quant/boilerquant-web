@@ -1,10 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Button from '../components/Button.astro';
 ---
 
-<Layout title="Page not found">
-	<h1 class="text-3xl font-bold">Page not found</h1>
-	<p class="mt-4 text-neutral-600">
-		That address doesn't exist on this site. <a href="/" class="underline">Go back home.</a>
-	</p>
+<Layout title="Page not found" noindex>
+	<PageHeader eyebrow="404" title="Page not found" lede="That address doesn't exist on this site." />
+	<div class="site-container py-12">
+		<Button href="/">Go back home</Button>
+	</div>
 </Layout>

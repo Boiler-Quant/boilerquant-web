@@ -1,0 +1,19 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Button from '../components/Button.astro';
+---
+
+<Layout title="Join us">
+	<PageHeader title="Join Boiler Quant" lede="Recruitment for the Fall 2026 semester is currently closed." />
+	<section class="site-container max-w-2xl py-12">
+		<p class="text-muted">
+			We recruit at the start of each semester. Follow us on Instagram or email the exec board to hear when
+			applications open again.
+		</p>
+		<div class="mt-8 flex flex-wrap gap-3">
+			<Button href="https://www.instagram.com/boilerquant/" target="_blank" rel="noopener noreferrer">Follow on Instagram</Button>
+			<Button href="mailto:boilerquant@purdue.edu" variant="secondary">Email us</Button>
+		</div>
+	</section>
+</Layout>

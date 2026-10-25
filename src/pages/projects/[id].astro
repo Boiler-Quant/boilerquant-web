@@ -1,0 +1,26 @@
+---
+// Dynamic route: one page per project in src/content/projects/.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Article from '../../components/Article.astro';
+import { formatDate } from '../../lib/format';
+
+export async function getStaticPaths() {
+	const items = await getCollection('projects', ({ data }) => !data.draft);
+	return items.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+const { item } = Astro.props;
+const { Content } = await render(item);
+const meta = [
+	item.data.status === 'current' ? 'In progress' : 'Completed',
+	`Started ${formatDate(item.data.date)}`,
+	item.data.lead && `Led by ${item.data.lead}`,
+	item.data.members?.length && `${item.data.members.length} members`,
+].filter(Boolean).join(' · ');
+---
+
+<Layout title={item.data.title} description={item.data.description}>
+	<Article backHref="/projects" backLabel="All projects" eyebrow={item.data.tag} title={item.data.title} meta={meta}>
+		<Content />
+	</Article>
+</Layout>

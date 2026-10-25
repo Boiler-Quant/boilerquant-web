@@ -1,0 +1,52 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import PostCard from '../../components/PostCard.astro';
+import { formatDate, byDateDesc } from '../../lib/format';
+
+const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
+const current = all.filter((p) => p.data.status === 'current');
+const completed = all.filter((p) => p.data.status === 'completed');
+const season = (d: Date) => `${d.getMonth() < 6 ? 'Spring' : 'Fall'} ${d.getFullYear()}`;
+---
+
+<Layout title="Projects">
+	<PageHeader title="Projects" lede="Semester-long team projects where members build, test, and present real quantitative work." />
+
+	<section class="site-container max-w-4xl py-12">
+		<SectionHeading title="Current projects" as="h2" class="mb-6" />
+		<div class="space-y-4">
+			{current.length === 0 && <p class="text-muted">No projects running right now. Check back at the start of the semester.</p>}
+			{current.map((p) => (
+				<PostCard
+					href={`/projects/${p.id}`}
+					title={p.data.title}
+					summary={p.data.description}
+					tag={p.data.tag}
+					label={season(p.data.date)}
+					meta={[p.data.lead && `Led by ${p.data.lead}`, `Started ${formatDate(p.data.date)}`].filter(Boolean).join(' · ')}
+				/>
+			))}
+		</div>
+	</section>
+
+	{completed.length > 0 && (
+		<section class="site-container max-w-4xl py-12">
+			<SectionHeading title="Completed projects" as="h2" class="mb-6" />
+			<div class="space-y-4">
+				{completed.map((p) => (
+					<PostCard
+						href={`/projects/${p.id}`}
+						title={p.data.title}
+						summary={p.data.description}
+						tag={p.data.tag}
+						label={season(p.data.date)}
+						meta={[p.data.lead && `Led by ${p.data.lead}`, season(p.data.date)].filter(Boolean).join(' · ')}
+					/>
+				))}
+			</div>
+		</section>
+	)}
+</Layout>
