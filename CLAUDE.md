@@ -30,7 +30,13 @@ src/
     executives.json  Exec board (from the old site; keys like "Full Name", "Role", "Index")
     logos.json       Placement/sponsor company logos (name, image path, website)
   styles/          global.css — imports Tailwind + typography plugin
+  assets/          Images that Astro should optimise at build time (use <Image> from astro:assets)
+    exec_pictures/   Exec/member headshots (compressed JPEGs)
 public/            Static files copied verbatim to the site root (favicon, images, PDFs)
+  club_logos/      Boiler Quant logo + submark in black/gold/white (PNG, solid backgrounds)
+  company_logos/   Placement/sponsor logos referenced by src/data/logos.json
+uploads/           Drop folder for raw images (git-ignored). See uploads/README.md
+scripts/process-images.mjs  Sorts + compresses uploads/ into src/assets and public/
 astro.config.mjs   Astro integrations (React, Tailwind)
 tsconfig.json      Extends astro/tsconfigs/strict; JSX configured for React
 dist/              Build output (generated; not committed)
@@ -48,6 +54,10 @@ dist/              Build output (generated; not committed)
   so it is type-checked and only shipped where used. Images those files point to
   (e.g. `/people/x.jpg`) belong in `public/`.
 - **Page copy** (headings, intro sentences) is written directly in the `.astro` page files.
+- **Images**: photos go in `src/assets/` and are imported into pages so Astro can resize/convert
+  them; logos and other files that should be served untouched go in `public/` and are referenced
+  by URL path (e.g. `/company_logos/sig.png`). New raw images go through `uploads/` +
+  `node scripts/process-images.mjs`; never commit multi-MB originals.
 
 Pages: `/` (home: minimal, future trading simulation only; club info lives on /about), `/about`, `/team`, `/news` + `/news/[id]`,
 `/placements`, `/blog` + `/blog/[id]`, `/404`. Nav links are defined once in `Header.astro`.

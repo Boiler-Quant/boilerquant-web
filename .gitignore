@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# raw image drops (originals stay on disk; processed copies live in src/assets and public)
+uploads/*
+!uploads/README.md

@@ -1,147 +1,147 @@
 [
   {
     "name": "Susquehanna",
-    "image": "/where_we_are_logos/sig.png",
+    "image": "/company_logos/sig.png",
     "website": "https://sig.com"
   },
   {
     "name": "Optiver",
-    "image": "/where_we_are_logos/optiver.png",
+    "image": "/company_logos/optiver.png",
     "website": "https://optiver.com"
   },
   {
     "name": "Citadel Securities",
-    "image": "/where_we_are_logos/citsec.jpg",
+    "image": "/company_logos/citsec.jpg",
     "website": "https://www.citadelsecurities.com"
   },
   {
     "name": "IMC",
-    "image": "/where_we_are_logos/imc.png",
+    "image": "/company_logos/imc.png",
     "website": "https://www.imc.com"
   },
   {
     "name": "Old Mission",
-    "image": "/where_we_are_logos/omc.png",
+    "image": "/company_logos/omc.png",
     "website": "https://oldmissioncapital.com"
   },
   {
     "name": "Peak6",
-    "image": "/where_we_are_logos/peak6.png",
+    "image": "/company_logos/peak6.png",
     "website": "https://peak6.com"
   },
   {
     "name": "Jump Trading",
-    "image": "/where_we_are_logos/jump.png",
+    "image": "/company_logos/jump.png",
     "website": "https://www.jumptrading.com"
   },
   {
     "name": "TMG",
-    "image": "/where_we_are_logos/tmg.png",
+    "image": "/company_logos/tmg.png",
     "website": "https://www.transmarketgroup.com"
   },
   {
     "name": "Akuna",
-    "image": "/where_we_are_logos/akuna.png",
+    "image": "/company_logos/akuna.png",
     "website": "https://akunacapital.com"
   },
   {
     "name": "Point72",
-    "image": "/where_we_are_logos/point72.png",
+    "image": "/company_logos/point72.png",
     "website": "https://point72.com"
   },
   {
     "name": "CME Group",
-    "image": "/where_we_are_logos/cme.png",
+    "image": "/company_logos/cme.png",
     "website": "https://www.cmegroup.com"
   },
   {
     "name": "OCC",
-    "image": "/where_we_are_logos/occ.png",
+    "image": "/company_logos/occ.png",
     "website": "https://www.theocc.com"
   },
   {
     "name": "MIAX",
-    "image": "/where_we_are_logos/miax.png",
+    "image": "/company_logos/miax.png",
     "website": "https://www.miaxglobal.com"
   },
   {
     "name": "Coinbase",
-    "image": "/where_we_are_logos/coinbase.png",
+    "image": "/company_logos/coinbase.png",
     "website": "https://www.coinbase.com"
   },
   {
     "name": "Goldman Sachs",
-    "image": "/where_we_are_logos/goldmansachs.png",
+    "image": "/company_logos/goldmansachs.png",
     "website": "https://www.goldmansachs.com"
   },
   {
     "name": "IEX",
-    "image": "/where_we_are_logos/iex.png",
+    "image": "/company_logos/iex.png",
     "website": "https://www.iex.io"
   },
   {
     "name": "Morgan Stanley",
-    "image": "/where_we_are_logos/morganstanley.jpeg",
+    "image": "/company_logos/morganstanley.jpeg",
     "website": "https://www.morganstanley.com"
   },
   {
     "name": "Google",
-    "image": "/where_we_are_logos/google.png",
+    "image": "/company_logos/google.png",
     "website": "https://about.google"
   },
   {
     "name": "Databricks",
-    "image": "/where_we_are_logos/databricks.png",
+    "image": "/company_logos/databricks.png",
     "website": "https://databricks.com"
   },
   {
     "name": "Nvidia",
-    "image": "/where_we_are_logos/nvidia.png",
+    "image": "/company_logos/nvidia.png",
     "website": "https://www.nvidia.com"
   },
   {
     "name": "Scale",
-    "image": "/where_we_are_logos/scale.png",
+    "image": "/company_logos/scale.png",
     "website": "https://scale.com"
   },
   {
     "name": "Snowflake",
-    "image": "/where_we_are_logos/snowflake.png",
+    "image": "/company_logos/snowflake.png",
     "website": "https://www.snowflake.com"
   },
   {
     "name": "Roblox",
-    "image": "/where_we_are_logos/roblox.png",
+    "image": "/company_logos/roblox.png",
     "website": "https://www.roblox.com"
   },
   {
     "name": "Space X",
-    "image": "/where_we_are_logos/spacex.png",
+    "image": "/company_logos/spacex.png",
     "website": "https://www.spacex.com"
   },
   {
     "name": "Amazon",
-    "image": "/where_we_are_logos/amazon.png",
+    "image": "/company_logos/amazon.png",
     "website": "https://www.amazon.jobs"
   },
   {
     "name": "IBM",
-    "image": "/where_we_are_logos/ibm.png",
+    "image": "/company_logos/ibm.png",
     "website": "https://ibm.com"
   },
   {
     "name": "Crowe",
-    "image": "/where_we_are_logos/crowe.png",
+    "image": "/company_logos/crowe.png",
     "website": "https://www.crowe.com"
   },
   {
     "name": "Vistra",
-    "image": "/where_we_are_logos/vistra.png",
+    "image": "/company_logos/vistra.png",
     "website": "https://vistracorp.com"
   },
   {
     "name": "Capital One",
-    "image": "/where_we_are_logos/capitalone.png",
+    "image": "/company_logos/capitalone.png",
     "website": "https://www.capitalone.com"
   }
 ]
