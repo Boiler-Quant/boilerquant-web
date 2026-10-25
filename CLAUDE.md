@@ -30,7 +30,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 | --- | --- |
 | `Header.astro` | Sticky nav, links defined once in its `links` array, hamburger menu on phones (vanilla script) |
 | `Footer.astro` | Link columns + contact; edit `columns` array |
-| `Hero.astro` | Home opening: canvas market visual + statement that expands into a paragraph on scroll |
+| `Hero.astro` | Home opening: full-screen Monte Carlo fan (`src/scripts/visuals/montecarlo.ts`) with the statement under it; on scroll the text rises, the fan fades, the paragraph appears |
 | `Button.astro` | `variant` primary/secondary/ghost, `size` sm/md/lg, renders `<a>` when `href` given |
 | `Card.astro` | Surface container; link card with hover when `href` given |
 | `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
@@ -75,6 +75,7 @@ src/
   content.config.ts
   data/            JSON data (executives, logos, education)
   lib/format.ts    formatDate, byDateDesc helpers
+  scripts/visuals/ Canvas visuals (common.ts: token colors + render loop; montecarlo.ts: home hero)
   assets/          Optimised images (exec_pictures/)
   styles/global.css  Design system + Tailwind entry
 public/            club_logos/, company_logos/, favicon

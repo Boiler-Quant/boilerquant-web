@@ -1,104 +1,79 @@
 ---
-// Home page opening: full-screen abstract market visual with a statement that
-// expands into a paragraph as you scroll, while the visual fades out.
+// Home page opening: a full-screen Monte Carlo fan (src/scripts/visuals/montecarlo.ts)
+// with the statement under it. On scroll the text rises, the visual fades out and
+// the rest of the paragraph fades in.
+//
+// The hidden paragraph still takes up layout space, so the script measures that
+// height (--extra) and shifts the block down by it at the top of the page; as you
+// scroll the shift blends into --rise, which places the full block in view.
+const statement = "We are Boiler Quant, Purdue's student-run quantitative finance club.";
+const paragraph =
+	'We bring together students from math, computer science, engineering, and economics to learn how modern markets actually work: by building trading strategies, running research projects, and competing against each other and other schools. Our alumni now trade and build at the firms that define the industry.';
 ---
 
 <section id="hero" class="relative h-[220vh]">
-	<div class="sticky top-0 h-screen overflow-hidden">
+	<div id="hero-stage" class="sticky overflow-hidden" style="top: var(--header-h, 61px); height: calc(100vh - var(--header-h, 61px))">
 		<canvas id="hero-viz" class="absolute inset-0 h-full w-full" style="opacity: calc(1 - var(--p, 0) * 1.4)" aria-hidden="true"></canvas>
 		<div class="absolute inset-0 bg-linear-to-t from-surface via-transparent to-transparent" aria-hidden="true"></div>
 
-		<div class="site-container relative flex h-full flex-col justify-end pb-20">
-			<p class="max-w-4xl text-[1.75rem] leading-[1.2] font-medium tracking-tight sm:text-4xl lg:text-[2.75rem]">
-				<span>We are Boiler Quant, Purdue's student-run quantitative finance club.</span>
-				<span style="opacity: var(--p, 0)">
-					We bring together students from math, computer science, engineering, and economics to learn how modern markets actually work: by building trading strategies, running research projects, and competing against each other and other schools. Our alumni now trade and build at the firms that define the industry.
-				</span>
+		<div
+			id="hero-text"
+			class="site-container relative flex h-full flex-col justify-end pb-24 will-change-transform"
+			style="transform: translateY(calc((1 - var(--p, 0)) * var(--extra, 0px) + var(--p, 0) * var(--rise, 0px)))"
+		>
+			<p class="max-w-4xl text-2xl leading-[1.2] font-medium tracking-tight sm:text-4xl lg:text-[2.75rem]">
+				<span id="hero-statement">{statement}</span>
+				<span style="opacity: var(--p, 0)"> {paragraph}</span>
 			</p>
-			<p class="meta mt-8" style="opacity: calc(1 - var(--p, 0) * 3)">Scroll ↓</p>
 		</div>
 	</div>
 </section>
 
 <script>
-	// Set up on every page that has a hero (astro:page-load fires on first load and
-	// after each client-side navigation). The returned cleanup stops the animation
-	// and removes window listeners when the user navigates away.
+	import { montecarlo } from '../scripts/visuals/montecarlo';
+
+	// Runs on first load and after each client-side navigation; the returned cleanup
+	// stops the animation and removes listeners when the user leaves the page.
 	const init = (hero: HTMLElement, canvas: HTMLCanvasElement) => {
 		const ac = new AbortController();
 		const { signal } = ac;
-		let alive = true;
+		const stage = document.getElementById('hero-stage')!;
+		const para = document.querySelector<HTMLElement>('#hero-text p')!;
+		const statement = document.getElementById('hero-statement')!;
+		const header = document.querySelector<HTMLElement>('header');
+
+		// Geometry: header height, hidden-paragraph height, and how far the block rises.
+		const measure = () => {
+			const headerH = header?.offsetHeight ?? 0;
+			document.documentElement.style.setProperty('--header-h', `${headerH}px`);
+			const extra = para.getBoundingClientRect().bottom - statement.getBoundingClientRect().bottom;
+			const stageH = stage.clientHeight;
+			const naturalTop = para.offsetTop; // where flex-end puts the block
+			const targetTop = Math.max(24, (stageH - para.offsetHeight) / 2); // centred, or just below the header
+			hero.style.setProperty('--extra', `${extra}px`);
+			hero.style.setProperty('--rise', `${targetTop - naturalTop}px`);
+		};
 
 		// Scroll progress: 0 at the top, 1 once the hero has fully scrolled through.
 		const update = () => {
-			const range = hero.offsetHeight - window.innerHeight;
-			const p = Math.min(1, Math.max(0, window.scrollY / range));
+			const range = hero.offsetHeight - stage.clientHeight;
+			const p = Math.min(1, Math.max(0, (window.scrollY - hero.offsetTop) / range));
 			hero.style.setProperty('--p', p.toFixed(3));
 		};
 		window.addEventListener('scroll', update, { passive: true, signal });
-		window.addEventListener('resize', update, { signal });
+		window.addEventListener('resize', () => { measure(); update(); }, { signal });
+		measure();
 		update();
+		document.fonts?.ready.then(measure); // re-measure once the web font has loaded
 
-		// Abstract market visual: random-walk lines drifting left, drawn in the
-		// accent color read from the design tokens (no hardcoded colors here).
-		const ctx = canvas.getContext('2d')!;
+		// Colors and font come from the design tokens; nothing is hardcoded in the visual.
 		const styles = getComputedStyle(document.documentElement);
-		const accent = styles.getPropertyValue('--color-gold').trim();
+		const v = (n: string) => styles.getPropertyValue(n).trim();
+		const palette = { gold: v('--color-gold'), goldTint: v('--color-gold-tint'), ash: v('--color-ash'), mono: v('--font-mono') };
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const N = 180;
-		const series = Array.from({ length: 6 }, (_, i) => ({
-			pts: [] as number[],
-			alpha: 0.18 + i * 0.14,
-			width: 1 + i * 0.25,
-			vol: 0.6 + Math.random() * 0.8,
-			y: 0.35 + Math.random() * 0.4,
-		}));
-		for (const s of series) {
-			let v = 0;
-			for (let i = 0; i < N; i++) { v += (Math.random() - 0.5) * s.vol; s.pts.push(v); }
-		}
-		let w = 0, h = 0;
-		const resize = () => {
-			const dpr = Math.min(2, window.devicePixelRatio || 1);
-			w = canvas.clientWidth; h = canvas.clientHeight;
-			canvas.width = w * dpr; canvas.height = h * dpr;
-			ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-		};
-		const draw = () => {
-			ctx.clearRect(0, 0, w, h);
-			ctx.strokeStyle = 'rgba(255,255,255,0.05)';
-			ctx.lineWidth = 1;
-			for (let x = 0; x < w; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke(); }
-			for (let y = 0; y < h; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
-			for (const s of series) {
-				ctx.beginPath();
-				ctx.strokeStyle = accent;
-				ctx.globalAlpha = s.alpha;
-				ctx.lineWidth = s.width;
-				s.pts.forEach((v, i) => {
-					const x = (i / (N - 1)) * w;
-					const y = h * s.y - v * (h / 60);
-					i ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
-				});
-				ctx.stroke();
-				ctx.globalAlpha = 1;
-			}
-		};
-		let last = 0;
-		const tick = (t: number) => {
-			if (!alive) return;
-			if (t - last > 60) {
-				last = t;
-				for (const s of series) { s.pts.shift(); s.pts.push(s.pts[s.pts.length - 1] + (Math.random() - 0.5) * s.vol); }
-				draw();
-			}
-			if (!reduce) requestAnimationFrame(tick);
-		};
-		resize(); draw();
-		window.addEventListener('resize', () => { resize(); draw(); }, { signal });
-		if (!reduce) requestAnimationFrame(tick);
+		const stop = montecarlo(canvas, { palette, reduce });
 
-		return () => { alive = false; ac.abort(); };
+		return () => { ac.abort(); stop(); };
 	};
 
 	let cleanup: (() => void) | undefined;
