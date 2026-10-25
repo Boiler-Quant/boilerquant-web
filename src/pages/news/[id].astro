@@ -1,0 +1,31 @@
+---
+// Dynamic route: one page per news item / event in src/content/news/.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const items = await getCollection('news', ({ data }) => !data.draft);
+	return items.map((item) => ({ params: { id: item.id }, props: { item } }));
+}
+
+const { item } = Astro.props;
+const { Content } = await render(item);
+
+const formatDate = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Layout title={item.data.title} description={item.data.description}>
+	<a href="/news" class="text-sm text-neutral-500 hover:underline">&larr; All news &amp; events</a>
+	<article class="mt-4">
+		<span class="text-xs uppercase tracking-wide text-neutral-500">{item.data.type}</span>
+		<h1 class="text-3xl font-bold">{item.data.title}</h1>
+		<p class="mt-2 text-sm text-neutral-500">
+			{formatDate(item.data.date)}
+			{item.data.location && ` · ${item.data.location}`}
+		</p>
+		<div class="prose mt-8">
+			<Content />
+		</div>
+	</article>
+</Layout>

@@ -1,0 +1,31 @@
+---
+// The square brackets in this filename mean "dynamic route": Astro builds one
+// page per blog post, using each post's id (its filename) as the URL.
+import { getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog', ({ data }) => !data.draft);
+	return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (d: Date) =>
+	d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+	<a href="/blog" class="text-sm text-neutral-500 hover:underline">&larr; All posts</a>
+	<article class="mt-4">
+		<h1 class="text-3xl font-bold">{post.data.title}</h1>
+		<p class="mt-2 text-sm text-neutral-500">
+			{formatDate(post.data.date)}
+			{post.data.author && ` · ${post.data.author}`}
+		</p>
+		<div class="prose mt-8">
+			<Content />
+		</div>
+	</article>
+</Layout>
