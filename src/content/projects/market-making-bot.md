@@ -1,11 +1,12 @@
 ---
 title: "Market-making bot for a simulated exchange"
 description: "A team of six is building an automated market maker and testing it against a replay of real order-book data."
-date: 2026-09-15
 status: current
-lead: "Lead TBD"
+date: 2026-09-15
+leads: ["Lead TBD"]
 members: ["Member 1", "Member 2", "Member 3"]
-tag: "Market making"
+tags: ["Market making", "Python"]
+image: ./images/market-making-bot.png
 ---
 
 ## Goal

@@ -1,5 +1,6 @@
 ---
 // Shell for a single blog post / news item / project page.
+// The optional "header" slot renders extra lines at the bottom of the title block.
 interface Props { backHref: string; backLabel: string; eyebrow?: string; title: string; meta?: string }
 const { backHref, backLabel, eyebrow, title, meta } = Astro.props;
 ---
@@ -10,6 +11,7 @@ const { backHref, backLabel, eyebrow, title, meta } = Astro.props;
 		{eyebrow && <p class="eyebrow">{eyebrow}</p>}
 		<h1 class:list={['text-3xl font-semibold tracking-tight text-heading sm:text-4xl', eyebrow && 'mt-3']}>{title}</h1>
 		{meta && <p class="meta mt-4">{meta}</p>}
+		<slot name="header" />
 	</header>
 	<div class="prose prose-lg mt-8 max-w-none">
 		<slot />

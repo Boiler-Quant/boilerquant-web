@@ -3,7 +3,8 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../components/Article.astro';
-import { formatDate } from '../../lib/format';
+import Tag from '../../components/Tag.astro';
+import { leadsLine, nameList } from '../../lib/format';
 
 export async function getStaticPaths() {
 	const items = await getCollection('projects', ({ data }) => !data.draft);
@@ -11,16 +12,19 @@ export async function getStaticPaths() {
 }
 const { item } = Astro.props;
 const { Content } = await render(item);
-const meta = [
-	item.data.status === 'current' ? 'In progress' : 'Completed',
-	`Started ${formatDate(item.data.date)}`,
-	item.data.lead && `Led by ${item.data.lead}`,
-	item.data.members?.length && `${item.data.members.length} members`,
-].filter(Boolean).join(' · ');
+const { leads, members, tags } = item.data;
 ---
 
 <Layout title={item.data.title} description={item.data.description}>
-	<Article backHref="/projects" backLabel="All projects" eyebrow={item.data.tag} title={item.data.title} meta={meta}>
+	<Article backHref="/projects" backLabel="All projects" title={item.data.title} meta={leadsLine(leads)}>
+		<Fragment slot="header">
+			{members.length > 0 && <p class="meta mt-2">Team: {nameList(members)}</p>}
+			{tags.length > 0 && (
+				<ul class="mt-5 flex flex-wrap gap-2">
+					{tags.map((t) => <li><Tag>{t}</Tag></li>)}
+				</ul>
+			)}
+		</Fragment>
 		<Content />
 	</Article>
 </Layout>

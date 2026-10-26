@@ -1,0 +1,7 @@
+---
+// Small pill label, e.g. a project tag. Pass the text as the slot.
+interface Props { class?: string }
+const { class: className } = Astro.props;
+---
+
+<span class:list={['inline-block rounded-full border border-edge px-2.5 py-0.5 font-mono text-[11px] tracking-wider uppercase text-accent', className]}><slot /></span>

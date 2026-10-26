@@ -1,10 +1,10 @@
 ---
-title: "Statistical arbitrage with cointegrated pairs"
+title: "Finmath: Financial Mathematics Library"
 description: "Spring 2026 project: finding and trading mean-reverting pairs of US equities."
-date: 2026-01-20
 status: completed
-lead: "Lead TBD"
-tag: "Stat arb"
+date: 2026-01-20
+leads: ["Lead TBD"]
+tags: ["Stat arb"]
 ---
 
 ## Summary

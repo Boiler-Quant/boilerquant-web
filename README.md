@@ -78,18 +78,28 @@ Same idea again, in `src/content/projects/`:
 ```md
 ---
 title: "Options volatility surface"
-description: "One sentence shown in the project list."
-date: 2026-09-01             # when the project started
-status: current              # "current" or "completed"
-lead: "Member Name"          # optional
-members: ["A", "B"]          # optional
-tag: "Options"               # optional short label
+description: "One sentence shown on the project card."
+status: current                      # "current" or "completed"
+leads: ["Member Name"]               # one or more names; [] if none yet
+members: ["A", "B", "C"]             # listed on the project page; optional
+tags: ["Options", "Python"]          # short labels shown as pills; optional
+image: ./images/vol-surface.png      # card banner; optional
+date: 2026-09-01                     # optional, never shown: orders projects newest first
 ---
 
 What the project is, what's been done, what's next.
 ```
 
 Current projects appear at the top of `/projects`; completed ones in the section below.
+Each section can be collapsed with the arrow next to its heading.
+
+### Adding a project image
+
+1. Save the picture in `src/content/projects/images/`. A 16:9 image (for example 1600 by 900 pixels) fills the card banner without cropping; other shapes are cropped to fit.
+2. In the project's `.md` file, point `image` at it with a path relative to the file, e.g. `image: ./images/vol-surface.png`.
+3. Save. Astro checks that the file exists at build time and generates a resized copy for the site, so the original can be large.
+
+Projects without an `image` get a plain gold gradient banner instead.
 
 ## Editing the exec board or placement logos
 

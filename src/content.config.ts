@@ -33,16 +33,20 @@ const news = defineCollection({
 
 const projects = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
-	schema: z.object({
-		title: z.string(),
-		description: z.string(),
-		date: z.coerce.date(), // when the project started
-		status: z.enum(['current', 'completed']).default('current'),
-		lead: z.string().optional(),
-		members: z.array(z.string()).optional(),
-		tag: z.string().optional(), // e.g. "Market making"
-		draft: z.boolean().default(false),
-	}),
+	// `image` is Astro's helper for a picture stored next to the Markdown file
+	// (e.g. "./images/my-project.png"); it is validated and optimised at build time.
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			description: z.string(),
+			status: z.enum(['current', 'completed']).default('current'),
+			date: z.coerce.date().optional(), // never shown; only orders projects, newest first
+			leads: z.array(z.string()).default([]),
+			members: z.array(z.string()).default([]),
+			tags: z.array(z.string()).default([]), // e.g. ["Market making", "Python"]
+			image: image().optional(), // card banner, 16:9 works best
+			draft: z.boolean().default(false),
+		}),
 });
 
 export const collections = { blog, news, projects };

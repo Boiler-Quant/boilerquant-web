@@ -3,12 +3,14 @@ import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { formatDate, byDateDesc } from '../../lib/format';
+import { leadsLine } from '../../lib/format';
 
-const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
+// Newest first when a date is given; undated projects go last.
+const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(
+	(a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0),
+);
 const current = all.filter((p) => p.data.status === 'current');
 const completed = all.filter((p) => p.data.status === 'completed');
-const season = (d: Date) => `${d.getUTCMonth() < 6 ? 'Spring' : 'Fall'} ${d.getUTCFullYear()}`;
 
 // Each group is a collapsible <details> section, open by default.
 const groups = [
@@ -51,11 +53,9 @@ const groups = [
 									href={`/projects/${p.id}`}
 									title={p.data.title}
 									summary={p.data.description}
-									tag={p.data.tag}
-									label={season(p.data.date)}
-									meta={[p.data.lead && `Led by ${p.data.lead}`, p.data.status === 'current' ? `Started ${formatDate(p.data.date)}` : season(p.data.date)]
-										.filter(Boolean)
-										.join(' · ')}
+									meta={leadsLine(p.data.leads)}
+									tags={p.data.tags}
+									image={p.data.image}
 								/>
 							))}
 						</div>

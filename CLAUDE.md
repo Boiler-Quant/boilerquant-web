@@ -36,8 +36,9 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 | `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
 | `PageHeader.astro` | Title block at the top of inner pages; `divider={false}` drops the bottom rule |
 | `PostCard.astro` | Wide horizontal card (thumbnail left) for blog/news lists, one per row |
-| `ProjectCard.astro` | Tall vertical card (banner on top) for the projects grid, two per row |
-| `Article.astro` | Shell for a single post/news/project page (back link, title, meta, `prose` body) |
+| `ProjectCard.astro` | Tall vertical card for the projects grid, two per row: image banner (gradient fallback), title, summary, "Led by", tag pills |
+| `Tag.astro` | Small pill label (project tags) |
+| `Article.astro` | Shell for a single post/news/project page (back link, title, meta, optional `header` slot, `prose` body) |
 | `ExecCard.astro` | Exec board member: square photo via `<Image>`, name, role, LinkedIn |
 | `EducationCards.astro` | Rotating tabbed cards for the four prep tracks; data in `src/data/education.json` |
 | `LogoGrid.astro` | Company logo grid, light-toned tiles, links out |
@@ -57,7 +58,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 
 ## Where content lives
 
-- **Blog / news / projects**: Markdown in `src/content/{blog,news,projects}/`. Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`.
+- **Blog / news / projects**: Markdown in `src/content/{blog,news,projects}/`. Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`. Projects take `leads`, `members`, `tags` (lists), an optional `image` (path relative to the .md, files in `src/content/projects/images/`) and an optional `date` that only orders them (never displayed).
 - **Exec board**: `src/data/executives.json` (keys like `"Full Name"`, `Role`, `Photo`, `LinkedIn`). The About page matches `Photo` filenames to headshots in `src/assets/exec_pictures/` via `import.meta.glob`. Row placement is by `Role` string, so roles must match exactly.
 - **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
 - **Education tracks**: `src/data/education.json` (`title`, `description`, `leads` = list of names; empty list hides the "Led by" line).
@@ -74,7 +75,7 @@ src/
   content/         Markdown collections (blog, news, projects)
   content.config.ts
   data/            JSON data (executives, logos, education)
-  lib/format.ts    formatDate, byDateDesc helpers
+  lib/format.ts    formatDate, byDateDesc, nameList ("A, B, and C"), leadsLine helpers
   scripts/visuals/ Canvas visuals (common.ts: token colors + render loop; montecarlo.ts: home hero)
   assets/          Optimised images (exec_pictures/)
   styles/global.css  Design system + Tailwind entry
