@@ -2,8 +2,8 @@
 title: "Welcome to the new Boiler Quant site"
 description: "Why we rebuilt the website and what's coming next."
 date: 2026-10-24
+type: news
 author: "Boiler Quant Exec Board"
-tag: "Announcements"
 ---
 
 We rebuilt the Boiler Quant website from scratch this fall. The new site is faster,
@@ -12,7 +12,7 @@ interactive trading simulation on the home page.
 
 ## What changed
 
-- Blog posts and events are now plain Markdown files, so anyone on exec can add one.
+- Posts and events are now plain Markdown files, so anyone on exec can add one.
 - The site is fully static, so it loads quickly and costs nothing to host.
 
 More posts coming soon.

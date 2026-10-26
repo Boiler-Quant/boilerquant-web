@@ -2,8 +2,8 @@
 title: "A gentle introduction to market making"
 description: "What a market maker does, and why the bid-ask spread exists."
 date: 2026-10-10
+type: post
 author: "Director of Projects"
-tag: "Education"
 ---
 
 A **market maker** is a firm that continuously quotes two prices for an asset: a

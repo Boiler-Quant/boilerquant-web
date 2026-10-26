@@ -6,27 +6,16 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
-const blog = defineCollection({
-	// Every .md file in src/content/blog/ is one post. The filename becomes the URL slug.
-	loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
-	schema: z.object({
-		title: z.string(),
-		description: z.string(),
-		date: z.coerce.date(), // "2026-10-24" in the file becomes a real Date
-		author: z.string().optional(),
-		tag: z.string().optional(), // short category label, e.g. "Education"
-		draft: z.boolean().default(false), // true = hidden from the site
-	}),
-});
-
 const news = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
-		date: z.coerce.date(), // when the event happens, or when the news was posted
-		type: z.enum(['event', 'news']).default('event'),
+		date: z.coerce.date(), // when the event happens, or when the item was posted
+		// event = something to attend; news = an announcement; post = a longer article
+		type: z.enum(['event', 'news', 'post']).default('event'),
 		location: z.string().optional(), // events only
+		author: z.string().optional(), // posts, e.g. "Director of Projects"
 		draft: z.boolean().default(false),
 	}),
 });
@@ -49,4 +38,4 @@ const projects = defineCollection({
 		}),
 });
 
-export const collections = { blog, news, projects };
+export const collections = { news, projects };

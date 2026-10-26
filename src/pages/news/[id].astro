@@ -1,5 +1,5 @@
 ---
-// Dynamic route: one page per news item / event in src/content/news/.
+// Dynamic route: one page per news item / event / post in src/content/news/.
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../components/Article.astro';
@@ -19,7 +19,7 @@ const { Content } = await render(item);
 		backLabel="All news & events"
 		eyebrow={item.data.type}
 		title={item.data.title}
-		meta={[formatDate(item.data.date), item.data.location].filter(Boolean).join(' · ')}
+		meta={[formatDate(item.data.date), item.data.location, item.data.author].filter(Boolean).join(' · ')}
 	>
 		<Content />
 	</Article>

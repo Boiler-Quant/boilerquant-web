@@ -134,7 +134,7 @@ html {
 	color: var(--color-black);
 }
 
-/* Long-form Markdown (blog posts, news, projects): map the typography plugin
+/* Long-form Markdown (news, posts, projects): map the typography plugin
    onto our tokens so it works on dark and light surfaces alike. */
 .prose {
 	--tw-prose-body: var(--fg);

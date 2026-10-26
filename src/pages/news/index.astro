@@ -9,7 +9,7 @@ const items = (await getCollection('news', ({ data }) => !data.draft)).sort(byDa
 ---
 
 <Layout title="News & Events">
-	<PageHeader title="News & Events" lede="Upcoming events and announcements from the club." />
+	<PageHeader title="News & Events" lede="Upcoming events, announcements, and posts from the club." />
 	<section class="site-container max-w-4xl space-y-4 py-12">
 		{items.map((item) => (
 			<PostCard
@@ -18,7 +18,7 @@ const items = (await getCollection('news', ({ data }) => !data.draft)).sort(byDa
 				summary={item.data.description}
 				tag={item.data.type}
 				label={formatShortDate(item.data.date)}
-				meta={[formatDate(item.data.date), item.data.location].filter(Boolean).join(' · ')}
+				meta={[formatDate(item.data.date), item.data.location, item.data.author].filter(Boolean).join(' · ')}
 			/>
 		))}
 	</section>

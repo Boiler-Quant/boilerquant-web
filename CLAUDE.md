@@ -35,7 +35,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 | `Card.astro` | Surface container; link card with hover when `href` given |
 | `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
 | `PageHeader.astro` | Title block at the top of inner pages; `divider={false}` drops the bottom rule |
-| `PostCard.astro` | Wide horizontal card (thumbnail left) for blog/news lists, one per row |
+| `PostCard.astro` | Wide horizontal card (thumbnail left) for the news list, one per row |
 | `ProjectCard.astro` | Tall vertical card for the projects grid, two per row: image banner (gradient fallback), title, summary, "Led by", tag pills |
 | `Tag.astro` | Small pill label (project tags) |
 | `Article.astro` | Shell for a single post/news/project page (back link, title, meta, optional `header` slot, `prose` body) |
@@ -49,8 +49,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 /            Home: Hero, "What We Do" (club intro, projects blurb, pillar links), Education (rotating cards, #education), Executive Board (#exec; row 1: President + VP; row 2: Projects, People, Operations, Marketing, Relations)
 /projects    Current + completed projects (collapsible <details> sections, 2-column grid) from the `projects` collection; /projects/[id]
 /placements  "Where We Are" logo grid from src/data/logos.json
-/news        News & events list (one card per row); /news/[id]
-/blog        Blog list (one card per row); /blog/[id]
+/news        News, events, and posts (one card per row); /news/[id]
 /join        Recruitment status (currently: closed for Fall 2026)
 /styleguide  Hidden design review page
 /404         Not found
@@ -58,7 +57,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 
 ## Where content lives
 
-- **Blog / news / projects**: Markdown in `src/content/{blog,news,projects}/`. Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`. Projects take `leads`, `members`, `tags` (lists), an optional `image` (path relative to the .md, files in `src/content/projects/images/`) and an optional `date` that only orders them (never displayed).
+- **News / projects**: Markdown in `src/content/{news,projects}/`. News `type` is `event`, `news`, or `post` (articles; there is no separate blog). Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`. Projects take `leads`, `members`, `tags` (lists), an optional `image` (path relative to the .md, files in `src/content/projects/images/`) and an optional `date` that only orders them (never displayed).
 - **Exec board**: `src/data/executives.json` (keys like `"Full Name"`, `Role`, `Photo`, `LinkedIn`). The About page matches `Photo` filenames to headshots in `src/assets/exec_pictures/` via `import.meta.glob`. Row placement is by `Role` string, so roles must match exactly.
 - **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
 - **Education tracks**: `src/data/education.json` (`title`, `description`, `leads` = list of names; empty list hides the "Led by" line).
@@ -72,7 +71,7 @@ src/
   pages/           Routes (see above). [id].astro files generate one page per content entry
   layouts/         Layout.astro: <head>, Header, Footer; props title, description, noindex, fullBleed
   components/      See table above
-  content/         Markdown collections (blog, news, projects)
+  content/         Markdown collections (news, projects)
   content.config.ts
   data/            JSON data (executives, logos, education)
   lib/format.ts    formatDate, byDateDesc, nameList ("A, B, and C"), leadsLine helpers
