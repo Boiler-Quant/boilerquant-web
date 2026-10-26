@@ -2,54 +2,66 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PageHeader from '../../components/PageHeader.astro';
-import SectionHeading from '../../components/SectionHeading.astro';
-import PostCard from '../../components/PostCard.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 import { formatDate, byDateDesc } from '../../lib/format';
 
 const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(byDateDesc);
 const current = all.filter((p) => p.data.status === 'current');
 const completed = all.filter((p) => p.data.status === 'completed');
 const season = (d: Date) => `${d.getUTCMonth() < 6 ? 'Spring' : 'Fall'} ${d.getUTCFullYear()}`;
+
+// Each group is a collapsible <details> section, open by default.
+const groups = [
+	{ title: 'Current projects', items: current, empty: 'No projects running right now. Check back at the start of the semester.' },
+	{ title: 'Completed projects', items: completed, empty: 'Nothing here yet.' },
+];
 ---
 
 <Layout title="Projects">
 	<PageHeader
 		title="Projects"
-		lede="Projects are at the core of the club. Members have full autonomy to contribute to existing projects or build on their own ideas. Our current project selection ranges all interests, from low-level optimization, to FPGA trading pipelines, to statistical arbitrage research."
+		divider={false}
 	/>
 
-	<section class="site-container max-w-4xl py-12">
-		<SectionHeading title="Current projects" as="h2" class="mb-6" />
-		<div class="space-y-4">
-			{current.length === 0 && <p class="text-muted">No projects running right now. Check back at the start of the semester.</p>}
-			{current.map((p) => (
-				<PostCard
-					href={`/projects/${p.id}`}
-					title={p.data.title}
-					summary={p.data.description}
-					tag={p.data.tag}
-					label={season(p.data.date)}
-					meta={[p.data.lead && `Led by ${p.data.lead}`, `Started ${formatDate(p.data.date)}`].filter(Boolean).join(' · ')}
-				/>
-			))}
-		</div>
-	</section>
-
-	{completed.length > 0 && (
-		<section class="site-container max-w-4xl py-12">
-			<SectionHeading title="Completed projects" as="h2" class="mb-6" />
-			<div class="space-y-4">
-				{completed.map((p) => (
-					<PostCard
-						href={`/projects/${p.id}`}
-						title={p.data.title}
-						summary={p.data.description}
-						tag={p.data.tag}
-						label={season(p.data.date)}
-						meta={[p.data.lead && `Led by ${p.data.lead}`, season(p.data.date)].filter(Boolean).join(' · ')}
-					/>
-				))}
-			</div>
-		</section>
-	)}
+	<div class="site-container space-y-12 pb-20">
+		{groups.map((g) => (
+			<details open class="group">
+				<summary class="flex cursor-pointer list-none items-center gap-3 select-none [&::-webkit-details-marker]:hidden">
+					<h2 class="text-3xl font-semibold tracking-tight text-heading">{g.title}</h2>
+					<span class="meta">({g.items.length})</span>
+					<svg
+						class="ml-1 h-5 w-5 text-muted transition-transform group-open:rotate-180"
+						viewBox="0 0 20 20"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						aria-hidden="true"
+					>
+						<path d="M5 8l5 5 5-5" />
+					</svg>
+				</summary>
+				<div class="mt-6">
+					{g.items.length === 0 && <p class="text-muted">{g.empty}</p>}
+					{g.items.length > 0 && (
+						<div class="grid gap-5 sm:grid-cols-2">
+							{g.items.map((p) => (
+								<ProjectCard
+									href={`/projects/${p.id}`}
+									title={p.data.title}
+									summary={p.data.description}
+									tag={p.data.tag}
+									label={season(p.data.date)}
+									meta={[p.data.lead && `Led by ${p.data.lead}`, p.data.status === 'current' ? `Started ${formatDate(p.data.date)}` : season(p.data.date)]
+										.filter(Boolean)
+										.join(' · ')}
+								/>
+							))}
+						</div>
+					)}
+				</div>
+			</details>
+		))}
+	</div>
 </Layout>

@@ -34,8 +34,9 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 | `Button.astro` | `variant` primary/secondary/ghost, `size` sm/md/lg, renders `<a>` when `href` given |
 | `Card.astro` | Surface container; link card with hover when `href` given |
 | `SectionHeading.astro` | Section title with optional `eyebrow` and `lede` |
-| `PageHeader.astro` | Title block at the top of inner pages |
-| `PostCard.astro` | Wide horizontal card (thumbnail left) for blog/news/project lists, one per row |
+| `PageHeader.astro` | Title block at the top of inner pages; `divider={false}` drops the bottom rule |
+| `PostCard.astro` | Wide horizontal card (thumbnail left) for blog/news lists, one per row |
+| `ProjectCard.astro` | Tall vertical card (banner on top) for the projects grid, two per row |
 | `Article.astro` | Shell for a single post/news/project page (back link, title, meta, `prose` body) |
 | `ExecCard.astro` | Exec board member: square photo via `<Image>`, name, role, LinkedIn |
 | `EducationCards.astro` | Rotating tabbed cards for the four prep tracks; data in `src/data/education.json` |
@@ -45,7 +46,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 
 ```
 /            Home: Hero, "What We Do" (club intro, projects blurb, pillar links), Education (rotating cards, #education), Executive Board (#exec; row 1: President + VP; row 2: Projects, People, Operations, Marketing, Relations)
-/projects    Current + completed projects from the `projects` collection; /projects/[id]
+/projects    Current + completed projects (collapsible <details> sections, 2-column grid) from the `projects` collection; /projects/[id]
 /placements  "Where We Are" logo grid from src/data/logos.json
 /news        News & events list (one card per row); /news/[id]
 /blog        Blog list (one card per row); /blog/[id]
