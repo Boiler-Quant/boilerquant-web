@@ -13,7 +13,10 @@ const season = (d: Date) => `${d.getUTCMonth() < 6 ? 'Spring' : 'Fall'} ${d.getU
 ---
 
 <Layout title="Projects">
-	<PageHeader title="Projects" lede="Semester-long team projects where members build, test, and present real quantitative work." />
+	<PageHeader
+		title="Projects"
+		lede="Projects are at the core of the club. Members have full autonomy to contribute to existing projects or build on their own ideas. Our current project selection ranges all interests, from low-level optimization, to FPGA trading pipelines, to statistical arbitrage research."
+	/>
 
 	<section class="site-container max-w-4xl py-12">
 		<SectionHeading title="Current projects" as="h2" class="mb-6" />

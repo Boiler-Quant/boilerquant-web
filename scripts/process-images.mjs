@@ -11,6 +11,7 @@
 import sharp from 'sharp';
 import { readdirSync, mkdirSync, copyFileSync, statSync } from 'node:fs';
 import { join, extname } from 'node:path';
+import { CROPS, cropHeadshot } from './headshot-crops.mjs';
 
 const JOBS = [
 	{ from: 'uploads/exec_pictures', to: 'src/assets/exec_pictures', kind: 'photo', max: 1600 },
@@ -33,7 +34,10 @@ for (const job of JOBS) {
 		const ext = extname(f).toLowerCase();
 		const fit = { width: job.max, height: job.max, fit: 'inside', withoutEnlargement: true };
 		let how;
-		if (job.kind === 'photo') {
+		if (job.kind === 'photo' && CROPS[f]) {
+			await cropHeadshot(src, dst, CROPS[f]);
+			how = 'crop';
+		} else if (job.kind === 'photo') {
 			// rotate() applies the camera's orientation tag, then metadata is dropped.
 			await sharp(src).rotate().resize(fit).jpeg({ quality: 85, mozjpeg: true }).toFile(dst);
 			how = 'jpeg';

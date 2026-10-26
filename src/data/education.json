@@ -2,25 +2,25 @@
 	{
 		"key": "trading",
 		"title": "Trading",
-		"description": "Market structure, order books, and the intuition behind market making and arbitrage. Includes weekly mock-trading games and a semester-long paper-trading challenge.",
-		"lead": "Lead TBD"
+		"description": "Training on probability, game theory, and market making. We meet weekly to play various trading games, from paper markets to card games.",
+		"leads": ["Yohaan Chokhany"]
 	},
 	{
 		"key": "dev",
 		"title": "Dev",
-		"description": "The software side of quant work: Python and C++ fundamentals, working with market data, backtesting frameworks, and writing code that other people can read.",
-		"lead": "Lead TBD"
+		"description": "Python and C++ fundamentals, working with complex market data, backtesting frameworks, low-level systems, and networking.",
+		"leads": ["Sandilya Kambamapti, Aiden Drepaniotis"]
 	},
 	{
 		"key": "math",
 		"title": "Math",
-		"description": "Probability, statistics, linear algebra, and the classic brainteasers that show up in quant interviews, taught through problem sets and group sessions.",
-		"lead": "Lead TBD"
+		"description": "Preparing for the Putnam exam by reviewing competition math concepts and problems. Proof writing, algebra, combinatorics, analysis, etc.",
+		"leads": ["Ethan Lee"]
 	},
 	{
 		"key": "hardware",
 		"title": "Hardware",
-		"description": "An introduction to low-latency systems: FPGAs, networking, and why nanoseconds matter. Hands-on labs with real development boards.",
-		"lead": "Lead TBD"
+		"description": "Introduction to low-latency systems: FPGAs, ASICs, and networking. Hands-on labs with real development boards.",
+		"leads": ["Aarush Agarwal, Mixuan Pan"]
 	}
 ]

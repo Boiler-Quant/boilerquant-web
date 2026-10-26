@@ -44,8 +44,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 ## Pages
 
 ```
-/            Home: Hero, stats band, "What We Do" cards (minimal by design; future trading sim)
-/about       Intro header, Education (rotating cards), Executive Board (row 1: President + VP; row 2: Projects, People, Operations, Marketing, Relations)
+/            Home: Hero, "What We Do" (club intro, projects blurb, pillar links), Education (rotating cards, #education), Executive Board (#exec; row 1: President + VP; row 2: Projects, People, Operations, Marketing, Relations)
 /projects    Current + completed projects from the `projects` collection; /projects/[id]
 /placements  "Where We Are" logo grid from src/data/logos.json
 /news        News & events list (one card per row); /news/[id]
@@ -60,9 +59,9 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 - **Blog / news / projects**: Markdown in `src/content/{blog,news,projects}/`. Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`.
 - **Exec board**: `src/data/executives.json` (keys like `"Full Name"`, `Role`, `Photo`, `LinkedIn`). The About page matches `Photo` filenames to headshots in `src/assets/exec_pictures/` via `import.meta.glob`. Row placement is by `Role` string, so roles must match exactly.
 - **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
-- **Education tracks**: `src/data/education.json` (`title`, `description`, `lead`).
-- **Home stats and "What We Do" copy**: arrays at the top of `src/pages/index.astro`.
-- **Images**: photos go in `src/assets/` (Astro optimises them when imported); logos and files served untouched go in `public/`. New raw images go through `uploads/` + `node scripts/process-images.mjs`; never commit multi-MB originals.
+- **Education tracks**: `src/data/education.json` (`title`, `description`, `leads` = list of names; empty list hides the "Led by" line).
+- **Home "What We Do" copy**: strings at the top of `src/pages/index.astro`.
+- **Images**: photos go in `src/assets/` (Astro optimises them when imported); logos and files served untouched go in `public/`. New raw images go through `uploads/` + `node scripts/process-images.mjs`; never commit multi-MB originals. Exec headshots are square-cropped by that script using the per-person head positions in `scripts/headshot-crops.mjs`; add an entry there for each new photo.
 
 ## Project layout
 

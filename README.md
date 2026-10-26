@@ -95,7 +95,7 @@ Current projects appear at the top of `/projects`; completed ones in the section
 
 - `src/data/executives.json` — one object per exec board member (name, role, major, photo, LinkedIn).
 - `src/data/logos.json` — one object per company logo on the Placements page.
-- `src/data/education.json` — the four prep-session tracks shown on the About page.
+- `src/data/education.json` — the four prep-session tracks shown on the home page. Each has a `leads` list, e.g. `["Ada Lovelace", "Alan Turing"]`.
 
 Edit the JSON, save, and the pages update. Photos and logo images referenced in these
 files should be placed under `public/` (for example `public/people/name.jpg`).

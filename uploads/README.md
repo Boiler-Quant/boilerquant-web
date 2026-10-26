@@ -12,7 +12,7 @@ Git, so originals stay on your machine without bloating the repo.
 
 | Folder            | Goes to                    | Treatment                                   |
 | ----------------- | -------------------------- | ------------------------------------------- |
-| `exec_pictures/`  | `src/assets/exec_pictures/` | Resized to fit 1600px, JPEG q85, EXIF stripped |
+| `exec_pictures/`  | `src/assets/exec_pictures/` | Square-cropped to the head (see `scripts/headshot-crops.mjs`), 900px, JPEG q85, EXIF stripped |
 | `bq_content/`     | `public/club_logos/`        | PNGs only, resized to fit 2048px, palette PNG  |
 | `company_logos/`  | `public/company_logos/`     | PNGs resized to fit 1600px, palette PNG; SVG/JPG copied |
 

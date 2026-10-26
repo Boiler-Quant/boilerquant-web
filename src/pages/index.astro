@@ -1,46 +1,84 @@
 ---
+import type { ImageMetadata } from 'astro';
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import Card from '../components/Card.astro';
 import SectionHeading from '../components/SectionHeading.astro';
+import EducationCards from '../components/EducationCards.astro';
+import ExecCard from '../components/ExecCard.astro';
+import executives from '../data/executives.json';
 
-const numbers = [
-	['120+', 'active members'],
-	['30', 'firms where alumni work'],
-	['8', 'project teams this semester'],
-	['3', 'competitions entered per year'],
+// "What We Do" copy. Edit the strings here; the layout below stays the same.
+const projectsCopy = [
+	'We provide our members with as much support as possible to learn about and engage with the HFT industry. This comes through project work, firm tours, education workshops, and social and industry events.',
+	'TODO: change this section'
 ];
 const pillars = [
-	['Projects', 'Semester-long teams build and backtest strategies, from market making to statistical arbitrage.', '/projects'],
-	['Education', 'Weekly prep sessions cover the math, programming, and market structure behind quant trading.', '/about#education'],
-	['Competitions', 'We train for and compete in trading competitions hosted by firms and other universities.', '/news'],
+	['Projects', 'Market microstructure, options pricing, prediction markets, and much more.', '/projects'],
+	['Education', 'Weekly prep sessions in trading, software development, math, and hardware.', '#education'],
+	['Social Events', 'Firm tours, professional talks, recruiter intros, poker tournaments, trading games, etc.', '/news'],
 ];
+
+// Headshots live in src/assets so Astro can resize them. Match each exec's
+// "Photo" filename (from the JSON) to the imported image.
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/exec_pictures/*.{jpg,jpeg}', { eager: true });
+const photoFor = (path: string) => photos[`../assets/exec_pictures/${path.split('/').pop()}`]?.default;
+
+// Row 1: president + VP. Row 2 in this fixed order.
+const byRole = (role: string) => executives.find((e) => e.Role === role);
+const rowOne = ['President', 'Vice President'].map(byRole).filter(Boolean);
+const rowTwo = ['Director of Operations', 'Director of People', 'Director of Projects', 'Director of Marketing', 'Director of Relations']
+	.map(byRole)
+	.filter(Boolean);
 ---
 
 <Layout title="Home" fullBleed>
 	<Hero />
 
-	<section class="border-y border-edge">
-		<div class="site-container grid grid-cols-2 gap-8 py-14 md:grid-cols-4">
-			{numbers.map(([n, label]) => (
-				<div>
-					<p class="font-mono text-4xl font-medium text-accent">{n}</p>
-					<p class="mt-1 text-sm text-muted">{label}</p>
+	<section id="what-we-do" class="scroll-mt-[var(--header-h,61px)] border-t border-edge">
+		<div class="site-container py-16 sm:py-20">
+			<SectionHeading title="What We Do" />
+			<div class="mt-10 grid gap-10 lg:grid-cols-[3fr_2fr] lg:gap-16">
+				<div class="max-w-2xl">
+					{projectsCopy.map((p) => <p class="mt-4 text-lg leading-relaxed first:mt-0">{p}</p>)}
 				</div>
-			))}
+				<ul class="space-y-4">
+					{pillars.map(([title, body, href]) => (
+						<li>
+							<Card href={href} class="flex items-baseline justify-between gap-4 !p-5">
+								<div>
+									<h3 class="font-semibold">{title}</h3>
+									<p class="mt-1 text-sm text-muted">{body}</p>
+								</div>
+								<span class="text-sm font-medium text-accent">→</span>
+							</Card>
+						</li>
+					))}
+				</ul>
+			</div>
 		</div>
 	</section>
 
-	<section class="site-container py-20">
-		<SectionHeading title="What We Do" />
-		<div class="mt-10 grid gap-5 md:grid-cols-3">
-			{pillars.map(([title, body, href]) => (
-				<Card href={href}>
-					<h3 class="text-lg font-semibold">{title}</h3>
-					<p class="mt-2 text-sm leading-relaxed text-muted">{body}</p>
-					<p class="mt-5 text-sm font-medium text-accent">Learn more →</p>
-				</Card>
-			))}
+	<section id="education" class="scroll-mt-[var(--header-h,61px)] border-t border-edge">
+		<div class="site-container py-16 sm:py-20">
+			<SectionHeading
+				title="Education"
+			/>
+			<div class="mt-8">
+				<EducationCards />
+			</div>
+		</div>
+	</section>
+
+	<section id="exec" class="scroll-mt-[var(--header-h,61px)] border-t border-edge">
+		<div class="site-container py-16 sm:py-20">
+			<SectionHeading title="Executive Board" />
+			<div class="mx-auto mt-10 grid max-w-md grid-cols-2 gap-5 sm:gap-6">
+				{rowOne.map((e) => e && <ExecCard name={e['Full Name']} role={e.Role} photo={photoFor(e.Photo)} linkedin={e.LinkedIn} />)}
+			</div>
+			<div class="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
+				{rowTwo.map((e) => e && <ExecCard name={e['Full Name']} role={e.Role} photo={photoFor(e.Photo)} linkedin={e.LinkedIn} />)}
+			</div>
 		</div>
 	</section>
 </Layout>
