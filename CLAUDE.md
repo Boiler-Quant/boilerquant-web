@@ -57,7 +57,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 
 ## Where content lives
 
-- **News / projects**: Markdown in `src/content/{news,projects}/`. News `type` is `event`, `news`, or `post` (articles; there is no separate blog). Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`. Projects take `leads`, `members`, `tags` (lists), an optional `image` (path relative to the .md, files in `src/content/projects/images/`) and an optional `date` that only orders them (never displayed).
+- **News / projects**: Markdown in `src/content/{news,projects}/`. News `type` is `event`, `news`, or `post` (articles; there is no separate blog). Schemas (required frontmatter fields) are in `src/content.config.ts` (Zod from `astro/zod`). Filename = URL slug = `entry.id`. `draft: true` hides an entry. Render a body with `const { Content } = await render(entry)` from `astro:content`. Projects take `leads`, `members`, `tags` (lists), an optional `image` (path relative to the .md, files in `src/content/projects/images/`) and an optional `order` number that sets their position in the list (unnumbered ones follow, A–Z by title).
 - **Exec board**: `src/data/executives.json` (keys like `"Full Name"`, `Role`, `Photo`, `LinkedIn`). The About page matches `Photo` filenames to headshots in `src/assets/exec_pictures/` via `import.meta.glob`. Row placement is by `Role` string, so roles must match exactly.
 - **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
 - **Education tracks**: `src/data/education.json` (`title`, `description`, `leads` = list of names; empty list hides the "Led by" line).
@@ -94,6 +94,11 @@ npx astro check    # TypeScript + template type-checking
 ```
 
 Run `npm run build` and `npx astro check` after any non-trivial change.
+
+If the dev server shows stale content after a change to `src/content.config.ts` (e.g. a new
+frontmatter field that stays `undefined`), its cached parse is out of date: run
+`npx astro dev stop`, delete `node_modules/.astro/data-store.json` and `.astro/data-store.json`,
+then `npm run dev`. The dev server is a long-lived daemon, so restart it after schema changes.
 
 ## Conventions
 

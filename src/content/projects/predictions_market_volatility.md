@@ -6,6 +6,7 @@ leads: ["Dhruv Jhamb"]
 members: ["Kashyap Maddala", "Tarun Venkatesh", "Ryan Challman", "David Oprea", "Peter Bossev"]
 tags: ["Predictions Market"]
 #image: 
+order: 5
 ---
 
 In progress

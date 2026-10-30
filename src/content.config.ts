@@ -29,7 +29,7 @@ const projects = defineCollection({
 			title: z.string(),
 			description: z.string(),
 			status: z.enum(['current', 'completed']).default('current'),
-			date: z.coerce.date().optional(), // never shown; only orders projects, newest first
+			order: z.number().optional(), // position within its section: 1 first, 2 second, ...; unnumbered projects follow, alphabetically
 			leads: z.array(z.string()).default([]),
 			members: z.array(z.string()).default([]),
 			tags: z.array(z.string()).default([]), // e.g. ["Market making", "Python"]

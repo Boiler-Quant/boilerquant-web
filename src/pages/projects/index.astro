@@ -5,9 +5,10 @@ import PageHeader from '../../components/PageHeader.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { leadsLine } from '../../lib/format';
 
-// Newest first when a date is given; undated projects go last.
+// Manual order first (smallest `order` number at the top); projects without a
+// number follow, alphabetically by title.
 const all = (await getCollection('projects', ({ data }) => !data.draft)).sort(
-	(a, b) => (b.data.date?.getTime() ?? 0) - (a.data.date?.getTime() ?? 0),
+	(a, b) => (a.data.order ?? Infinity) - (b.data.order ?? Infinity) || a.data.title.localeCompare(b.data.title),
 );
 const current = all.filter((p) => p.data.status === 'current');
 const completed = all.filter((p) => p.data.status === 'completed');

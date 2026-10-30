@@ -75,14 +75,16 @@ leads: ["Member Name"]               # one or more names; [] if none yet
 members: ["A", "B", "C"]             # listed on the project page; optional
 tags: ["Options", "Python"]          # short labels shown as pills; optional
 image: ./images/vol-surface.png      # card banner; optional
-date: 2026-09-01                     # optional, never shown: orders projects newest first
+order: 1                             # optional: position in its section (1 = top); unnumbered ones follow A–Z
 ---
 
 What the project is, what's been done, what's next.
 ```
 
 Current projects appear at the top of `/projects`; completed ones in the section below.
-Each section can be collapsed with the arrow next to its heading.
+Each section can be collapsed with the arrow next to its heading. Within a section,
+projects with an `order` number come first (1, then 2, ...), and the rest follow
+alphabetically by title. Gaps are fine (10, 20, 30) and make later inserts easy.
 
 ### Adding a project image
 

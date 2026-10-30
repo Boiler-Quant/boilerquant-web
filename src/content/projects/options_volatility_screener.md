@@ -6,6 +6,7 @@ leads: ["Neel Chawla"]
 members: ["Ryan Challman", "Aahan Sharma", "Arnav Mody", "Sairah Ghule"]
 tags: ["Options Theory", "Options Pricing", "Volatility"]
 #image: 
+order: 3
 ---
 
 # Goal
