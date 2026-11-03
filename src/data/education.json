@@ -9,7 +9,7 @@
 		"key": "dev",
 		"title": "Dev",
 		"description": "Python and C++ fundamentals, working with complex market data, backtesting frameworks, low-level systems, and networking.",
-		"leads": ["Sandilya Kambamapti, Aiden Drepaniotis"]
+		"leads": ["Sandilya Kambamapti", "Aiden Drepaniotis"]
 	},
 	{
 		"key": "math",
@@ -21,6 +21,6 @@
 		"key": "hardware",
 		"title": "Hardware",
 		"description": "Introduction to low-latency systems: FPGAs, ASICs, and networking. Hands-on labs with real development boards.",
-		"leads": ["Aarush Agarwal, Mixuan Pan"]
+		"leads": ["Aarush Agarwal", "Mixuan Pan"]
 	}
 ]
