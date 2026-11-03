@@ -13,8 +13,9 @@
 //   - When the spread is wider than a tick, new orders occasionally land inside it,
 //     narrowing it again. Spread and mid price therefore wander instead of being fixed.
 //     Trades lean slightly against the drift so the price stays near where it began.
-//   - The ladder is drawn around the mid, which eases toward its new value when the
-//     book shifts, so the picture stays centred while the price drifts.
+//   - The spread line is fixed at the centre of the canvas. Rows are laid out by level
+//     (best ask directly above the line, best bid directly below), so the line always
+//     sits between two rows. When a side shifts, its rows glide into place.
 import { type Visual, loop, rgba, randn } from './common';
 
 export const orderbook: Visual = (canvas, { palette, reduce }) => {
@@ -43,7 +44,7 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 	let flashA = new Float32Array(N + 2), flashB = new Float32Array(N + 2);
 	let nextTrade = 0.5;
 	let prints: { side: 1 | -1; t: number }[] = [];
-	let shownMid = (bestBid + bestAsk) / 2; // eased mid for drawing
+	let askOff = 0, bidOff = 0; // row offsets (ease back to 0) so a side glides after a shift
 
 	const spreadTicks = () => Math.round((bestAsk - bestBid) / TICK);
 
@@ -52,14 +53,14 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 		const s = side === 'ask' ? asks : bids, f = side === 'ask' ? flashA : flashB;
 		s.copyWithin(0, 1); s[N + 1] = seedLevel(N + 1);
 		f.copyWithin(0, 1); f[N + 1] = 0;
-		if (side === 'ask') bestAsk += TICK; else bestBid -= TICK;
+		if (side === 'ask') { bestAsk += TICK; askOff += 1; } else { bestBid -= TICK; bidOff += 1; }
 	};
 	// A new order inside the spread: it becomes the touch and the spread narrows.
 	const insideOrder = (side: 'ask' | 'bid') => {
 		const s = side === 'ask' ? asks : bids, f = side === 'ask' ? flashA : flashB;
 		s.copyWithin(1, 0); s[0] = 3 + Math.random() * 8;
 		f.copyWithin(1, 0); f[0] = 0;
-		if (side === 'ask') bestAsk -= TICK; else bestBid += TICK;
+		if (side === 'ask') { bestAsk -= TICK; askOff -= 1; } else { bestBid += TICK; bidOff -= 1; }
 	};
 
 	// Size churn for one side: empty levels wait for a refill, live levels may be
@@ -100,17 +101,18 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 			if (Math.random() < p || extra >= MAX_SPREAD) insideOrder('ask');
 			else if (Math.random() < p) insideOrder('bid');
 		}
-		// Ease the drawn mid toward the real one so shifts glide instead of jumping.
-		const mid = (bestBid + bestAsk) / 2;
-		shownMid += (mid - shownMid) * Math.min(1, 5 * dt);
+		// Rows glide into their new slots after a shift.
+		const k = Math.min(1, 6 * dt);
+		askOff -= askOff * k;
+		bidOff -= bidOff * k;
 	};
 
 	return loop(canvas, (ctx, w, h, t, dt) => {
 		if (!reduce) step(t, dt);
 		ctx.clearRect(0, 0, w, h);
 
-		const rows = 2 * N + 1;
-		const rowH = (h * 0.84) / rows;
+		const LINE_GAP = 0.35; // extra rows of space either side of the spread line
+		const rowH = (h * 0.84) / (2 * N + 1 + 2 * LINE_GAP);
 		const ym = h / 2;
 		const fontPx = Math.max(10, Math.min(13, rowH * 0.55));
 		ctx.font = `${fontPx}px ${palette.mono}`;
@@ -118,14 +120,14 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 		const priceRight = w * 0.32;
 		const barX = w * 0.42, barMax = w * 0.52;
 		const barH = Math.max(3, rowH * 0.5);
-		const yFor = (price: number) => ym - ((price - shownMid) / TICK) * rowH;
 
-		const drawSide = (sizes: Float32Array, flash: Float32Array, touch: number, dir: 1 | -1, color: string) => {
+		// Level j of a side sits j+1 rows from the line (plus the gap and its glide offset).
+		const drawSide = (sizes: Float32Array, flash: Float32Array, touch: number, dir: 1 | -1, off: number, color: string) => {
 			for (let j = 0; j < N + 2; j++) {
 				const price = touch + dir * j * TICK; // asks go up from their touch, bids down
-				const y = yFor(price);
-				if (Math.abs(y - ym) > rowH * (N + 0.5)) continue;
-				const near = Math.max(0, 1 - Math.abs(price - shownMid) / (TICK * (N + 1)));
+				const y = ym - dir * (j + 1 + LINE_GAP + off) * rowH;
+				if (y < rowH * 0.5 || y > h - rowH * 0.5) continue;
+				const near = Math.max(0, 1 - j / (N + 1));
 				const size = sizes[j];
 				const empty = size < 0.5;
 				ctx.fillStyle = rgba(palette.ash, (empty ? 0.2 : 0.45) + 0.4 * near);
@@ -141,16 +143,12 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 				ctx.fillText(String(Math.round(size)), barX + len + 6, y);
 			}
 		};
-		drawSide(asks, flashA, bestAsk, 1, palette.loss);
-		drawSide(bids, flashB, bestBid, -1, palette.gain);
-		// Empty ticks inside the spread get a dim price label so the gap reads as a gap.
-		ctx.textAlign = 'right';
-		ctx.fillStyle = rgba(palette.ash, 0.2);
-		for (let p = bestBid + TICK; p < bestAsk - TICK / 2; p += TICK) ctx.fillText(p.toFixed(2), priceRight, yFor(p));
+		drawSide(asks, flashA, bestAsk, 1, askOff, palette.loss);
+		drawSide(bids, flashB, bestBid, -1, bidOff, palette.gain);
 
-		// Mid line with the mid price, the spread, and the recent trade prints as dots.
+		// Spread line, fixed at the centre: mid price, spread, and recent trade prints as dots.
 		const mid = (bestBid + bestAsk) / 2;
-		const yMid = yFor(mid);
+		const yMid = ym;
 		ctx.strokeStyle = rgba(palette.gold, 0.35);
 		ctx.lineWidth = 1;
 		ctx.beginPath(); ctx.moveTo(w * 0.06, yMid); ctx.lineTo(w * 0.94, yMid); ctx.stroke();
