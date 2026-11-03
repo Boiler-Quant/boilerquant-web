@@ -78,7 +78,7 @@ src/
   scripts/visuals/ Canvas visuals (common.ts: token colors + render loop; montecarlo.ts: home hero)
   assets/          Optimised images (exec_pictures/)
   styles/global.css  Design system + Tailwind entry
-public/            club_logos/, company_logos/, favicon
+public/            club_logos/, company_logos/, favicon files (regenerate with node scripts/make-favicon.mjs)
 uploads/           Drop folder for raw images (git-ignored). See uploads/README.md
 scripts/process-images.mjs
 ```
