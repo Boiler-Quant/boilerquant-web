@@ -1,6 +1,9 @@
 ---
-// Home page opening: a full-screen Monte Carlo fan (src/scripts/visuals/montecarlo.ts)
-// with the statement under it. On scroll the text rises, the visual fades out and
+// Home page opening: a full-screen visual with the statement under it. Wide screens
+// get the Monte Carlo fan (src/scripts/visuals/montecarlo.ts); tall (portrait) screens
+// such as phones get the order book ladder (src/scripts/visuals/orderbook.ts), which
+// suits a narrow canvas. The choice follows the orientation media query and swaps live
+// if the device rotates. On scroll the text rises, the visual fades out and
 // the rest of the paragraph fades in; the next section follows as soon as the
 // paragraph is complete (the section is exactly one screen plus the transition).
 //
@@ -67,6 +70,7 @@ const paragraph =
 
 <script>
 	import { montecarlo } from '../scripts/visuals/montecarlo';
+	import { orderbook } from '../scripts/visuals/orderbook';
 
 	const ANIM = 1.2; // screen-heights of scroll for the text/visual transition (section height = 100vh + this)
 	const scrollDriven = CSS.supports('animation-timeline', 'scroll()');
@@ -117,11 +121,17 @@ const paragraph =
 		// Colors and font come from the design tokens; nothing is hardcoded in the visual.
 		const styles = getComputedStyle(document.documentElement);
 		const v = (n: string) => styles.getPropertyValue(n).trim();
-		const palette = { gold: v('--color-gold'), goldTint: v('--color-gold-tint'), ash: v('--color-ash'), mono: v('--font-mono') };
+		const palette = { gold: v('--color-gold'), goldTint: v('--color-gold-tint'), ash: v('--color-ash'), gain: v('--color-gain'), loss: v('--color-loss'), mono: v('--font-mono') };
 		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-		const stop = montecarlo(canvas, { palette, reduce });
 
-		return () => { ac.abort(); stop(); };
+		// Portrait (taller than wide) gets the order book ladder, landscape the fan.
+		// Each visual returns its own cleanup; swap them if the orientation changes.
+		const portrait = window.matchMedia('(orientation: portrait)');
+		const mount = (isPortrait: boolean) => (isPortrait ? orderbook : montecarlo)(canvas, { palette, reduce });
+		let stopVisual = mount(portrait.matches);
+		portrait.addEventListener('change', (e) => { stopVisual(); stopVisual = mount(e.matches); }, { signal });
+
+		return () => { ac.abort(); stopVisual(); };
 	};
 
 	let cleanup: (() => void) | undefined;

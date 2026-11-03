@@ -5,6 +5,8 @@ export interface Palette {
 	gold: string;
 	goldTint: string;
 	ash: string;
+	gain: string;
+	loss: string;
 	mono: string; // font-family string for canvas text
 }
 
