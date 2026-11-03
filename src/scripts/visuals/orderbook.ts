@@ -24,14 +24,14 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 	const step = (t: number, dt: number) => {
 		// Gentle churn on every level: adds and cancels.
 		for (let i = 0; i < N; i++) {
-			asks[i] = Math.max(2, asks[i] + randn() * 12 * dt * 4);
-			bids[i] = Math.max(2, bids[i] + randn() * 12 * dt * 4);
-			flashA[i] = Math.max(0, flashA[i] - dt * 2.5);
-			flashB[i] = Math.max(0, flashB[i] - dt * 2.5);
+			asks[i] = Math.max(2, asks[i] + randn() * 12 * dt * 3);
+			bids[i] = Math.max(2, bids[i] + randn() * 12 * dt * 3);
+			flashA[i] = Math.max(0, flashA[i] - dt * 1.9);
+			flashB[i] = Math.max(0, flashB[i] - dt * 1.9);
 		}
 		// Discrete events: a trade hits the best bid or lifts the best ask.
 		if (t >= nextEvent) {
-			nextEvent = t + 0.12 + Math.random() * 0.45;
+			nextEvent = t + 0.16 + Math.random() * 0.6;
 			const buy = Math.random() < 0.5;
 			const qty = 5 + Math.random() * 30;
 			if (buy) { asks[0] -= qty; flashA[0] = 1; } else { bids[0] -= qty; flashB[0] = 1; }
@@ -93,7 +93,7 @@ export const orderbook: Visual = (canvas, { palette, reduce }) => {
 		ctx.fillText(`spread ${TICK.toFixed(2)}`, barX, ym);
 		prints.forEach((p, i) => {
 			const age = t - p.t;
-			const a = Math.max(0, 1 - age / 3);
+			const a = Math.max(0, 1 - age / 4);
 			ctx.fillStyle = rgba(p.side > 0 ? palette.gain : palette.loss, a);
 			ctx.beginPath(); ctx.arc(w * 0.92 - (prints.length - 1 - i) * 7, ym, 2, 0, Math.PI * 2); ctx.fill();
 		});
