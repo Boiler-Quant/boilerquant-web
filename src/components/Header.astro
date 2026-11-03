@@ -19,19 +19,22 @@ const isActive = (href: string) => (href === '/' ? currentPath === '/' : current
 			<span class="text-base font-semibold tracking-tight">Boiler Quant</span>
 		</a>
 
-		<ul class="hidden items-center gap-7 md:flex">
+		<ul class="hidden items-center gap-1 md:flex">
 			{links.map((l) => (
 				<li>
 					<a
 						href={l.href}
 						aria-current={isActive(l.href) ? 'page' : undefined}
-						class:list={['text-sm transition-colors hover:text-accent', isActive(l.href) ? 'font-medium text-accent' : 'text-fg']}
+						class:list={[
+							'block rounded-md px-3.5 py-2 text-sm transition-colors hover:bg-card-hover hover:text-accent',
+							isActive(l.href) ? 'font-medium text-accent' : 'text-fg',
+						]}
 					>
 						{l.label}
 					</a>
 				</li>
 			))}
-			<li><Button href="/join" size="sm">Join us</Button></li>
+			<li class="ml-4"><Button href="/join" size="sm">Join us</Button></li>
 		</ul>
 
 		<button
