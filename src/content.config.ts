@@ -8,16 +8,20 @@ import { z } from 'astro/zod';
 
 const news = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
-	schema: z.object({
-		title: z.string(),
-		description: z.string(),
-		date: z.coerce.date(), // when the event happens, or when the item was posted
-		// event = something to attend; news = an announcement; post = a longer article
-		type: z.enum(['event', 'news', 'post']).default('event'),
-		location: z.string().optional(), // events only
-		author: z.string().optional(), // posts, e.g. "Director of Projects"
-		draft: z.boolean().default(false),
-	}),
+	// `image` is Astro's helper for a picture stored next to the Markdown file
+	// (e.g. "./images/my-event/cover.jpg"); it is validated and optimised at build time.
+	schema: ({ image }) =>
+		z.object({
+			title: z.string(),
+			description: z.string(),
+			date: z.coerce.date(), // when the event happens, or when the item was posted
+			// event = something to attend; news = an announcement; post = a longer article
+			type: z.enum(['event', 'news', 'post']).default('event'),
+			location: z.string().optional(), // events only
+			author: z.string().optional(), // posts, e.g. "Director of Projects"
+			image: image().optional(), // thumbnail on the news list card, 4:3 works best
+			draft: z.boolean().default(false),
+		}),
 });
 
 const projects = defineCollection({

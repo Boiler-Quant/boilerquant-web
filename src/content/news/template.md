@@ -9,6 +9,7 @@ date: 2026-01-01            # YYYY-MM-DD. When the event happens, or when the it
 type: event                 # event = something to attend; news = an announcement; post = a longer article
 location: "Building, Room"  # events only — delete this line otherwise
 # author: "Director of Projects"   # posts only — uncomment for articles
+# image: ./images/my-event/cover.jpg   # optional thumbnail on the news list; path relative to this file
 draft: true                 # true hides the entry from the site; set to false (or delete the line) to publish
 ---
 
@@ -18,3 +19,4 @@ Write the body here in Markdown.
 
 - So do lists
 - And **bold**, *italic*, and [links](https://example.com)
+

@@ -1,13 +1,20 @@
 ---
 // Wide horizontal card used for news items and posts:
 // thumbnail on the left, text on the right. One per row.
-interface Props { href: string; title: string; summary: string; meta: string; tag?: string; label?: string }
-const { href, title, summary, meta, tag, label } = Astro.props;
+// The thumbnail shows `image` when given, otherwise `label` (the date) on a gold gradient.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { href: string; title: string; summary: string; meta: string; tag?: string; label?: string; image?: ImageMetadata }
+const { href, title, summary, meta, tag, label, image } = Astro.props;
 ---
 
 <a href={href} class="group flex gap-5 rounded-lg border border-edge bg-card p-4 transition-colors hover:bg-card-hover sm:gap-6 sm:p-5">
-	<div class="flex aspect-[4/3] w-28 shrink-0 items-center justify-center rounded-md bg-linear-to-br from-gold-deep to-ink sm:w-44">
-		<span class="font-mono text-xs text-gold">{label ?? '—'}</span>
+	<div class="flex aspect-[4/3] w-28 shrink-0 items-center justify-center overflow-hidden rounded-md bg-linear-to-br from-gold-deep to-ink sm:w-44">
+		{image ? (
+			<Image src={image} alt="" width={352} height={264} fit="cover" class="h-full w-full object-cover" />
+		) : (
+			<span class="font-mono text-xs text-gold">{label ?? '—'}</span>
+		)}
 	</div>
 	<div class="flex min-w-0 flex-col">
 		{tag && <p class="eyebrow text-[11px]">{tag}</p>}
