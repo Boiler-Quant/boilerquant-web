@@ -62,7 +62,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 - **Logos**: `src/data/logos.json` (`name`, `image` = `/company_logos/<file>`, `website`). Images in `public/company_logos/`.
 - **Education tracks**: `src/data/education.json` (`title`, `description`, `leads` = list of names; empty list hides the "Led by" line).
 - **Home "What We Do" copy**: strings at the top of `src/pages/index.astro`.
-- **Images**: photos go in `src/assets/` (Astro optimises them when imported); logos and files served untouched go in `public/`. New raw images go through `uploads/` + `node scripts/process-images.mjs`; never commit multi-MB originals. Exec headshots are square-cropped by that script using the per-person head positions in `scripts/headshot-crops.mjs`; add an entry there for each new photo.
+- **Images**: photos go in `src/assets/` (Astro optimises them when imported); logos and files served untouched go in `public/`. New raw images go through `uploads/` + `node scripts/process-images.mjs`; never commit multi-MB originals. Exec headshots are square-cropped by that script using the per-person head positions in `scripts/headshot-crops.mjs`; add an entry there for each new photo. News photos go in `uploads/news/<post>/` and come out as JPEGs in `src/content/news/images/<post>/`; posts reference them as `![alt](./images/<post>/<file>.jpg)`.
 
 ## Project layout
 
