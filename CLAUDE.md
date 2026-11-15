@@ -7,9 +7,9 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 ## Tech stack
 
 - **Astro 7** — static site framework. Pages are `.astro` files; they render to plain HTML at build time with no JavaScript shipped unless a component asks for it.
-- **TypeScript** (strict) — used in `.astro` frontmatter and any `.ts`/`.tsx` files.
+- **TypeScript** (strict) — used in `.astro` frontmatter and any `.ts` files.
 - **Tailwind CSS 4** — utility-class styling via `@tailwindcss/vite`. The one stylesheet is `src/styles/global.css`; it also holds the design tokens (see below). `@tailwindcss/typography` provides the `prose` class for rendered Markdown.
-- **React 19** via `@astrojs/react` — reserved for interactive components only (planned: the home-page trading simulation). Default to `.astro` components; use React only when a component needs client-side state, and give it a `client:*` directive.
+- **No UI framework** (no React/Vue/Svelte). Interactivity is plain TypeScript in component `<script>` tags; the home-page visuals are canvas code in `src/scripts/visuals/`. If a future component truly needs a framework, add it with `npx astro add react`.
 - **IBM Plex Sans / Mono** — self-hosted via `@fontsource/*`, imported in `global.css`.
 - **Client-side routing**: `<ClientRouter />` in `Layout.astro` (from `astro:transitions`) intercepts link clicks, fetches the next page and swaps it in place, so navigation never does a full reload. Page swaps are instant: `transition:animate="none"` on `<html>` and `fallback="swap"` disable the default crossfade. `prefetch` in `astro.config.mjs` fetches a page's HTML as soon as its link is visible.
 - **Deployment target**: Vercel. Astro's default static output needs no adapter.

@@ -1,7 +1,7 @@
 # Boiler Quant website
 
 The public website for Boiler Quant, Purdue University's quantitative finance club.
-Built with [Astro](https://astro.build), TypeScript, Tailwind CSS, and React.
+Built with [Astro](https://astro.build), TypeScript, and Tailwind CSS.
 
 ## Run it locally
 
