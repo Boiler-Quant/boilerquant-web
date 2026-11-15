@@ -1,6 +1,7 @@
 ---
 // Dynamic route: one page per news item / event / post in src/content/news/.
 import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../components/Article.astro';
 import { formatDate } from '../../lib/format';
@@ -11,9 +12,12 @@ export async function getStaticPaths() {
 }
 const { item } = Astro.props;
 const { Content } = await render(item);
+// Link-preview picture: the entry's own image when it has one (as a 1200px JPEG,
+// which every app can show), otherwise the layout's default club mark.
+const preview = item.data.image && (await getImage({ src: item.data.image, width: 1200, format: 'jpg' })).src;
 ---
 
-<Layout title={item.data.title} description={item.data.description}>
+<Layout title={item.data.title} description={item.data.description} image={preview}>
 	<Article
 		backHref="/news"
 		backLabel="All news & events"

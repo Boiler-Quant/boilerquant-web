@@ -1,6 +1,7 @@
 ---
 // Dynamic route: one page per project in src/content/projects/.
 import { getCollection, render } from 'astro:content';
+import { getImage } from 'astro:assets';
 import Layout from '../../layouts/Layout.astro';
 import Article from '../../components/Article.astro';
 import Tag from '../../components/Tag.astro';
@@ -12,10 +13,13 @@ export async function getStaticPaths() {
 }
 const { item } = Astro.props;
 const { Content } = await render(item);
+// Link-preview picture: the entry's own image when it has one (as a 1200px JPEG,
+// which every app can show), otherwise the layout's default club mark.
+const preview = item.data.image && (await getImage({ src: item.data.image, width: 1200, format: 'jpg' })).src;
 const { leads, members, tags } = item.data;
 ---
 
-<Layout title={item.data.title} description={item.data.description}>
+<Layout title={item.data.title} description={item.data.description} image={preview}>
 	<Article backHref="/projects" backLabel="All projects" title={item.data.title} meta={leadsLine(leads)}>
 		<Fragment slot="header">
 			{members.length > 0 && <p class="meta mt-2">Team: {nameList(members)}</p>}

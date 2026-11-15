@@ -12,6 +12,7 @@ This is a from-scratch rebuild. The previous site lives in a separate repo
 - **No UI framework** (no React/Vue/Svelte). Interactivity is plain TypeScript in component `<script>` tags; the home-page visuals are canvas code in `src/scripts/visuals/`. If a future component truly needs a framework, add it with `npx astro add react`.
 - **IBM Plex Sans / Mono** — self-hosted via `@fontsource/*`, imported in `global.css`.
 - **Client-side routing**: `<ClientRouter />` in `Layout.astro` (from `astro:transitions`) intercepts link clicks, fetches the next page and swaps it in place, so navigation never does a full reload. Page swaps are instant: `transition:animate="none"` on `<html>` and `fallback="swap"` disable the default crossfade. `prefetch` in `astro.config.mjs` fetches a page's HTML as soon as its link is visible.
+- **SEO / link previews**: `site` in `astro.config.mjs` is the public address (taken from Vercel's `VERCEL_PROJECT_PRODUCTION_URL` at build time, fallback `https://boilerquant.com`). `Layout.astro` writes the canonical URL and Open Graph tags on every page; its `image` prop sets the preview picture (default `public/og-image.png`, regenerate with `node scripts/make-og-image.mjs`; news/project pages pass their own image). `@astrojs/sitemap` builds `sitemap-index.xml` (skips `/styleguide`); `src/pages/robots.txt.ts` serves `/robots.txt`.
 - **Deployment target**: Vercel. Astro's default static output needs no adapter.
 
 ## Design system ("Terminal" direction: dark everywhere, gold accents)
@@ -69,7 +70,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 ```
 src/
   pages/           Routes (see above). [id].astro files generate one page per content entry
-  layouts/         Layout.astro: <head>, Header, Footer; props title, description, noindex, fullBleed
+  layouts/         Layout.astro: <head>, Header, Footer; props title, description, noindex, fullBleed, image
   components/      See table above
   content/         Markdown collections (news, projects)
   content.config.ts

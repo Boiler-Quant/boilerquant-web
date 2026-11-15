@@ -10,13 +10,21 @@ interface Props {
 	description?: string;
 	noindex?: boolean; // hide from search engines (e.g. /styleguide)
 	fullBleed?: boolean; // page manages its own sections (home)
+	image?: string; // link-preview picture (path or URL); defaults to the club mark
 }
 const {
 	title,
 	description = "Boiler Quant — Purdue University's student-run quantitative finance club.",
 	noindex = false,
 	fullBleed = false,
+	image = '/og-image.png',
 } = Astro.props;
+
+// Link previews (the card shown when a link is pasted into iMessage, Slack, LinkedIn…)
+// need full https:// addresses, built here from the `site` set in astro.config.mjs.
+const pageTitle = `${title} · Boiler Quant`;
+const pageUrl = new URL(Astro.url.pathname, Astro.site);
+const imageUrl = new URL(image, Astro.site);
 ---
 
 <!doctype html>
@@ -30,7 +38,17 @@ const {
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<title>{title} · Boiler Quant</title>
+		<title>{pageTitle}</title>
+		<link rel="canonical" href={pageUrl} />
+		<link rel="sitemap" href="/sitemap-index.xml" />
+		{/* Open Graph tags: what link previews read. */}
+		<meta property="og:site_name" content="Boiler Quant" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={pageUrl} />
+		<meta property="og:image" content={imageUrl} />
+		<meta name="twitter:card" content="summary_large_image" />
 		{/* Client-side routing: links fetch the next page and swap it in place instead of a
 		   full reload. transition:animate="none" on <html> and fallback="swap" disable the
 		   default crossfade so swaps are instant. */}
