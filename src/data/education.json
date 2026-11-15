@@ -3,24 +3,34 @@
 		"key": "trading",
 		"title": "Trading",
 		"description": "Training on probability, game theory, and market making. We meet weekly to play various trading games, from paper markets to card games.",
-		"leads": ["Yohaan Chokhany"]
+		"leads": [
+			{ "name": "Yohaan Chokhany", "linkedin": "https://www.linkedin.com/in/yohaan-chokhany/" }
+		]
 	},
 	{
 		"key": "dev",
 		"title": "Dev",
 		"description": "Python and C++ fundamentals, working with complex market data, backtesting frameworks, low-level systems, and networking.",
-		"leads": ["Sandilya Kambamapti", "Aiden Drepaniotis"]
+		"leads": [
+			{ "name": "Sandilya Kambhampati", "linkedin": "https://www.linkedin.com/in/kprsandilya/" },
+			{ "name": "Aiden Drepaniotis", "linkedin": "https://www.linkedin.com/in/aiden-drepaniotis/" }
+		]
 	},
 	{
 		"key": "math",
 		"title": "Math",
 		"description": "Preparing for the Putnam exam by reviewing competition math concepts and problems. Proof writing, algebra, combinatorics, analysis, etc.",
-		"leads": ["Ethan Lee"]
+		"leads": [
+			{ "name": "Ethan Lee", "linkedin": "https://www.linkedin.com/in/ethan-lee-2138a72a0/" }
+		]
 	},
 	{
 		"key": "hardware",
 		"title": "Hardware",
 		"description": "Introduction to low-latency systems: FPGAs, ASICs, and networking. Hands-on labs with real development boards.",
-		"leads": ["Aarush Agarwal", "Mixuan Pan"]
+		"leads": [
+			{ "name": "Aarush Agarwal", "linkedin": "https://www.linkedin.com/in/aarusha/" },
+			{ "name": "Mixuan Pan", "linkedin": "https://www.linkedin.com/in/mixuan-pan/" }
+		]
 	}
 ]

@@ -98,7 +98,7 @@ Projects without an `image` get a plain gold gradient banner instead.
 
 - `src/data/executives.json` — one object per exec board member (name, role, major, photo, LinkedIn).
 - `src/data/logos.json` — one object per company logo on the Placements page.
-- `src/data/education.json` — the four prep-session tracks shown on the home page. Each has a `leads` list, e.g. `["Ada Lovelace", "Alan Turing"]`.
+- `src/data/education.json` — the four prep-session tracks shown on the home page. Each has a `leads` list of people, e.g. `[{ "name": "Ada Lovelace", "linkedin": "https://www.linkedin.com/in/..." }]`. The name links to the LinkedIn profile; leave `linkedin` out to show the name as plain text.
 
 Edit the JSON, save, and the pages update. Photos and logo images referenced in these
 files should be placed under `public/` (for example `public/people/name.jpg`).
