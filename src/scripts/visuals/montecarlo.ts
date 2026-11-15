@@ -25,7 +25,7 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 
 	return loop(canvas, (ctx, w, h, _t, dt) => {
 		const ox = w * 0.3, oy = h * 0.4;
-		const dx = (w * 0.68) / S;
+		const dx = (w * 0.72) / S; // the origin sits at 30% of the width, so the paths end just past the right edge
 		if (paths.length === 0 || w !== w0 || h !== h0) {
 			regen(h);
 			// Seed a realised path running in from the left edge to the origin, so the
