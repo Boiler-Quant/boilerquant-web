@@ -55,6 +55,11 @@
     "website": "https://point72.com"
   },
   {
+    "name": "Y Combinator",
+    "image": "/company_logos/yc.png",
+    "website": "https://www.ycombinator.com"
+  },
+  {
     "name": "CME Group",
     "image": "/company_logos/cme.png",
     "website": "https://www.cmegroup.com"
