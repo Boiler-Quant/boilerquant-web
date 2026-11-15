@@ -46,7 +46,9 @@ export const easeOut = (u: number) => 1 - Math.pow(1 - u, 2.2);
 
 /**
  * Run `render` every frame (or once if reduced motion). Handles HiDPI scaling and
- * resizing. Returns a cleanup that stops the loop and removes listeners.
+ * resizing. The loop pauses while the canvas is scrolled off screen, so an invisible
+ * animation doesn't keep the browser busy and slow down the rest of the page.
+ * Returns a cleanup that stops the loop and removes listeners.
  */
 export function loop(canvas: HTMLCanvasElement, render: Render, opts: { reduce: boolean; fps?: number }): () => void {
 	const ctx = canvas.getContext('2d')!;
@@ -63,21 +65,28 @@ export function loop(canvas: HTMLCanvasElement, render: Render, opts: { reduce: 
 	const ro = new ResizeObserver(() => { resize(); if (opts.reduce) render(ctx, w, h, 0, 0); });
 	ro.observe(canvas);
 
+	let io: IntersectionObserver | undefined;
 	if (opts.reduce) {
 		render(ctx, w, h, 0, 0);
 	} else {
 		const start = performance.now();
 		let last = start;
+		let visible = true; // is any part of the canvas inside the viewport?
+		let running = false; // is a frame currently scheduled?
 		const minDt = opts.fps ? 1000 / opts.fps : 0;
 		const tick = (now: number) => {
-			if (!alive) return;
+			if (!alive || !visible) { running = false; return; }
 			requestAnimationFrame(tick);
 			if (now - last < minDt) return;
-			const dt = Math.min(0.1, (now - last) / 1000); // cap dt after tab switches
+			const dt = Math.min(0.1, (now - last) / 1000); // cap dt after tab switches or a pause
 			last = now;
 			render(ctx, w, h, (now - start) / 1000, dt);
 		};
-		requestAnimationFrame(tick);
+		const run = () => { if (!running) { running = true; requestAnimationFrame(tick); } };
+		// Stop drawing when the canvas leaves the screen; pick up again when it returns.
+		io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) run(); });
+		io.observe(canvas);
+		run();
 	}
-	return () => { alive = false; ro.disconnect(); };
+	return () => { alive = false; ro.disconnect(); io?.disconnect(); };
 }
