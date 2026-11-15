@@ -29,7 +29,7 @@ Everything visual is defined in `src/styles/global.css`. **Never hardcode a hex 
 
 | Component | Purpose |
 | --- | --- |
-| `Header.astro` | Sticky nav, links defined once in its `links` array, hamburger menu on phones (vanilla script) |
+| `Header.astro` | Sticky nav, links defined once in its `links` array, hamburger menu on phones (vanilla script), and a thin gold scroll-progress line along its bottom edge (CSS scroll-driven animation, JS `--scroll-progress` fallback) |
 | `Footer.astro` | Link columns + contact; edit `columns` array |
 | `Hero.astro` | Home opening: full-screen visual with the statement on it: the Monte Carlo fan (`src/scripts/visuals/montecarlo.ts`) on landscape screens, the order book ladder (`src/scripts/visuals/orderbook.ts`) on portrait ones, chosen by the `(orientation: portrait)` media query and swapped live on rotation. On scroll the visual fades and the rest of the paragraph appears, then the next section follows. Landscape: the statement sits at the bottom and rises. Portrait: the text block is centred over a half-brightness order book and stays put. Text size is set from the screen width in the component's `<style>`. Motion is a CSS scroll-driven animation (`animation-timeline: scroll()`), with a JS `--p` fallback |
 | `Button.astro` | `variant` primary/secondary/ghost, `size` sm/md/lg, renders `<a>` when `href` given |

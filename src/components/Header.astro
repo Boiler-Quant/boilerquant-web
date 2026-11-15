@@ -66,7 +66,35 @@ const isActive = (href: string) => (href === '/' ? currentPath === '/' : current
 			<li class="py-3"><Button href="/join" class="w-full">Join us</Button></li>
 		</ul>
 	</div>
+
+	{/* Scroll progress line: a thin gold light along the header's bottom edge that grows
+	   from left to right as you scroll down the page (empty at the top, full at the
+	   bottom). It stays empty on pages too short to scroll. */}
+	<div
+		id="scroll-progress"
+		class="pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-left bg-accent"
+		style="transform: scaleX(var(--scroll-progress, 0))"
+		aria-hidden="true"
+	></div>
 </header>
+
+<style>
+	#scroll-progress {
+		box-shadow: 0 0 8px var(--accent); /* soft glow, so it reads as a light */
+	}
+	/* The browser ties the line's width directly to the scroll position. Browsers
+	   without this feature use the --scroll-progress value set by the script below. */
+	@supports (animation-timeline: scroll()) {
+		#scroll-progress {
+			animation: scroll-progress linear both;
+			animation-timeline: scroll(root); /* 0% at the top of the page, 100% at the bottom */
+		}
+	}
+	@keyframes scroll-progress {
+		from { transform: scaleX(0); }
+		to { transform: scaleX(1); }
+	}
+</style>
 
 <script>
 	// With client-side routing (ClientRouter) this module runs once per visit, but the
@@ -91,4 +119,17 @@ const isActive = (href: string) => (href === '/' ? currentPath === '/' : current
 	// Close when the window grows past the phone breakpoint, or on Escape.
 	window.matchMedia('(min-width: 768px)').addEventListener('change', (e) => { if (e.matches) setOpen(false); });
 	document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+
+	// Scroll progress line, fallback for browsers without CSS scroll-driven animations:
+	// publish how far down the page we are (0 to 1) as --scroll-progress.
+	if (!CSS.supports('animation-timeline', 'scroll()')) {
+		const root = document.documentElement;
+		const update = () => {
+			const max = root.scrollHeight - window.innerHeight;
+			root.style.setProperty('--scroll-progress', (max > 0 ? Math.min(1, window.scrollY / max) : 0).toFixed(4));
+		};
+		window.addEventListener('scroll', update, { passive: true });
+		window.addEventListener('resize', update);
+		document.addEventListener('astro:page-load', update);
+	}
 </script>
