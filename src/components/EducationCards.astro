@@ -41,7 +41,7 @@ const leadParts = (leads: Lead[]) => {
 				<p class="meta mt-5">
 					Led by {leadParts(t.leads).map((part) =>
 						part.href ? (
-							<a href={part.href} target="_blank" rel="noopener noreferrer" class="text-accent hover:text-accent-hover hover:underline">{part.text}</a>
+							<a href={part.href} target="_blank" rel="noopener noreferrer" class="text-accent underline underline-offset-2 hover:text-accent-hover">{part.text}</a>
 						) : (
 							part.text
 						),
