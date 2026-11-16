@@ -1,15 +1,21 @@
 // Monte Carlo fan: simulated paths spread from one origin into a cone; overlapping
-// low-alpha strokes make the dense middle glow. One path is then chosen as the
+// low-alpha strokes make the dense middle glow. Each path starts at its own moment
+// and grows at its own speed, so the fan's front edge is ragged and you can see the
+// individual lines being drawn (rather than one straight edge sweeping across, which
+// looks like a picture being uncovered). One path is then chosen as the
 // realised future, the scene slides so its end becomes the new origin, and a new
 // fan grows from there, forever.
 import { type Visual, loop, rgba, randn, easeInOut, easeOut } from './common';
 
 export const montecarlo: Visual = (canvas, { palette, reduce }) => {
-	const M = 170, S = 150;
+	const M = 45, S = 150; // M = number of paths in the fan, S = segments per path
 	const DUR = { grow: 3.4, hold: 0.5, select: 0.9, shift: 1.1 };
 	type Phase = keyof typeof DUR;
 	let phase: Phase = 'grow', phaseT = 0;
 	let paths: Float32Array[] = [];
+	// Per-path timing within the grow phase, as fractions of it (0 = phase start, 1 = end):
+	// path m starts drawing at growStart[m] and reaches the right edge at growEnd[m].
+	let growStart = new Float32Array(M), growEnd = new Float32Array(M);
 	let history: { x: number; y: number }[] = [];
 	let chosen = 0;
 	let w0 = 0, h0 = 0;
@@ -21,6 +27,10 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 			for (let i = 1; i <= S; i++) p[i] = p[i - 1] + randn() * sigma;
 			return p;
 		});
+		for (let m = 0; m < M; m++) {
+			growStart[m] = Math.random() * 0.4; // start somewhere in the first 40% of the phase
+			growEnd[m] = growStart[m] + 0.45 + Math.random() * (0.55 - growStart[m]); // take at least 45% of it; all done by the end
+		}
 	};
 
 	return loop(canvas, (ctx, w, h, _t, dt) => {
@@ -37,10 +47,11 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 		}
 		phaseT += dt;
 
-		let steps = S, others = 1, chosenAlpha = 0, offX = 0, offY = 0;
+		// growU: how far through the grow phase we are (1 = every path fully drawn).
+		let growU = 1, others = 1, chosenAlpha = 0, offX = 0, offY = 0;
 		const u = Math.min(1, phaseT / DUR[phase]);
 		switch (phase) {
-			case 'grow': steps = easeOut(u) * S; break;
+			case 'grow': growU = u; break;
 			case 'hold': break;
 			case 'select': others = 1 - 0.7 * easeInOut(u); chosenAlpha = easeInOut(u); break;
 			case 'shift': {
@@ -51,7 +62,7 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 				break;
 			}
 		}
-		if (reduce) { steps = S; }
+		if (reduce) growU = 1;
 		if (!reduce && phaseT >= DUR[phase]) {
 			phaseT = 0;
 			if (phase === 'grow') phase = 'hold';
@@ -70,7 +81,7 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 				history = history.filter((q) => q.x > -20);
 				regen(h);
 				phase = 'grow';
-				offX = offY = 0; steps = 0; others = 1; chosenAlpha = 0;
+				offX = offY = 0; growU = 0; others = 1; chosenAlpha = 0;
 			}
 		}
 
@@ -88,12 +99,16 @@ export const montecarlo: Visual = (canvas, { palette, reduce }) => {
 			ctx.stroke();
 		}
 		// Fan: additive blending makes overlaps glow
-		const n = Math.floor(steps), f = steps - n;
-		if (steps > 0 && others > 0) {
+		if (growU > 0 && others > 0) {
 			ctx.globalCompositeOperation = 'lighter';
-			ctx.strokeStyle = rgba(palette.gold, 0.07 * others);
-			ctx.lineWidth = 1;
+			ctx.strokeStyle = rgba(palette.gold, 0.16 * others); // faint per line; overlaps add up to the glow
+			ctx.lineWidth = 1.5;
 			for (let m = 0; m < M; m++) {
+				// This path's own progress: 0 before its start, 1 once it has reached the edge.
+				const um = Math.min(1, Math.max(0, (growU - growStart[m]) / (growEnd[m] - growStart[m])));
+				if (um <= 0) continue;
+				const steps = easeOut(um) * S; // how many segments of it to draw (may be fractional)
+				const n = Math.floor(steps), f = steps - n;
 				const p = paths[m];
 				ctx.beginPath();
 				ctx.moveTo(ox, oy);
