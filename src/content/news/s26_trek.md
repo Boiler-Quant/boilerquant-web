@@ -7,7 +7,7 @@ image: ./images/s26_trek/s26_trek_1.jpg
 draft: false                 # true hides the entry from the site; set to false (or delete the line) to publish
 ---
 
-# Fall 2025 Club Trek
+# Spring 2026 Club Trek
 Firms:
 - [Akuna Capital](https://akunacapital.com)
 - [Valkyrie Trading](https://www.valkyrietrading.com/)
