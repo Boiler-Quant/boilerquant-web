@@ -73,8 +73,15 @@ const rowTwo = ['Director of Operations', 'Director of People', 'Director of Pro
 	<section id="exec" class="scroll-mt-[var(--header-h,61px)] border-t border-edge">
 		<div class="site-container py-16 sm:py-20">
 			<SectionHeading title="Executive Board" />
-			<div class="mx-auto mt-10 grid max-w-md grid-cols-2 gap-5 sm:gap-6">
-				{rowOne.map((e) => e && <ExecCard name={e['Full Name']} role={e.Role} photo={photoFor(e.Photo)} linkedin={e.LinkedIn} />)}
+			{/* Row 1 is centred, and each card is exactly as wide as one column of the grid
+			   below (2 columns on phones, 3 on tablets, 5 on wide screens; the calc() takes
+			   the gaps between columns into account), so all cards are the same size. */}
+			<div class="mt-10 flex justify-center gap-5 sm:gap-6">
+				{rowOne.map((e) => e && (
+					<div class="w-[calc((100%-1.25rem)/2)] sm:w-[calc((100%-3rem)/3)] lg:w-[calc((100%-6rem)/5)]">
+						<ExecCard name={e['Full Name']} role={e.Role} photo={photoFor(e.Photo)} linkedin={e.LinkedIn} />
+					</div>
+				))}
 			</div>
 			<div class="mt-8 grid grid-cols-2 gap-5 sm:grid-cols-3 sm:gap-6 lg:grid-cols-5">
 				{rowTwo.map((e) => e && <ExecCard name={e['Full Name']} role={e.Role} photo={photoFor(e.Photo)} linkedin={e.LinkedIn} />)}
